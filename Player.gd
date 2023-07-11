@@ -26,11 +26,11 @@ func _physics_process(delta):
 	var camera = $Camera;
 	camera.rotation.x -= leftStick.y * 0.04;
 	camera.rotation.x = clamp(camera.rotation.x, deg2rad(-90), deg2rad(90));
-	# var wasd = Input.get_vector("right_stick_up","right_stick_down","right_stick_left","right_stick_right");
-	var xMove = Input.get_axis("right_stick_up","right_stick_down");
-	var yMove = Input.get_axis("right_stick_left","right_stick_right"); # not sure why is always 0
+	var wasd = Input.get_vector("right_stick_up","right_stick_down","right_stick_left","right_stick_right");
+	var zMove = wasd.x;
+	var xMove = wasd.y;
 	var direction = Vector3(0,0,0);
-	#direction += xMove * transform.basis.x;
+	direction += zMove * transform.basis.x;
 	direction += xMove * transform.basis.z;
 	if direction.length() > 1:
 		direction = direction.normalized();
