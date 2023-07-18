@@ -9,11 +9,22 @@ var jump = 18;
 var mouse_sensitivity = 0.05;
 
 func _ready():
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	var camera = Camera.new();
 	camera.name ="Camera";
 	add_child(camera);
 	# TODO: need to add collision shape from code instead of in node graph
-	
+
+func _input(event):	
+	if event is InputEventMouseMotion:
+		rotate_y(deg2rad(-event.relative.x * mouse_sensitivity)) 
+		$Camera.rotate_x(deg2rad(-event.relative.y * mouse_sensitivity)) 
+		$Camera.rotation.x = clamp($Camera.rotation.x, deg2rad(-90), deg2rad(90))
+	if event is InputEventKey and event.scancode == KEY_ESCAPE:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+
 func _physics_process(delta):
 	if global_translation.y > 0:
 		move_and_slide(fall, Vector3.UP)
