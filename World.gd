@@ -6,6 +6,7 @@ var j = 0; #x position
 var k = 0; #y-position
 
 func _ready():
+	makeASphere(0,0,-10,0,0,1);
 	agasthyaReady();
 	fatimaReady();
 	nadiaReady();
@@ -127,7 +128,18 @@ func makeACube(x=0,y=0,z=0,r=1,g=0,b=0):
 	sb.add_child(m);
 	sb.translation = Vector3(x,y,z);
 	add_child(sb);
-
+	
+func makeASphere(x=0,y=0,z=0,r=1,g=0,b=0):
+	print("makeASphere");
+	var m = MeshInstance.new();
+	var sm = SphereMesh.new();
+	var mat = SpatialMaterial.new();
+	mat.albedo_color = Color(r,g,b,1);
+	sm.material = mat;
+	m.mesh = sm;
+	m.translation = Vector3(x,y,z);
+	add_child(m);
+	
 func cubeRow(spec="",x=0,y=0,z=0,xInc=2,zInc=0,r=1,g=0,b=0):
 	var head = spec.substr(0,1);
 	var tail = spec.substr(1,-1);
