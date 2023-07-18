@@ -26,8 +26,8 @@ func _input(event):
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _physics_process(delta):
-	if global_translation.y > 0:
-		move_and_slide(fall, Vector3.UP)
+	#if global_translation.y > -10:
+#		move_and_slide(fall, Vector3.UP)
 	if not is_on_floor():
 		fall.y -= gravity
 	if Input.is_action_just_pressed("a_button") and is_on_floor():
