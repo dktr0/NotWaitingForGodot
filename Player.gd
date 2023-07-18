@@ -22,16 +22,16 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("a_button") and is_on_floor():
 		fall.y = jump
 	var leftStick = Input.get_vector("left_stick_left","left_stick_right","left_stick_up","left_stick_down");
-	rotate_y(-leftStick.x*0.04); 
+	var rightStick = Input.get_vector("right_stick_left","right_stick_right","right_stick_up","right_stick_down");
+	rotate_y(-rightStick.x*0.04); 
 	var camera = $Camera;
-	camera.rotation.x -= leftStick.y * 0.04;
+	camera.rotation.x -= rightStick.y * 0.04;
 	camera.rotation.x = clamp(camera.rotation.x, deg2rad(-90), deg2rad(90));
-	var wasd = Input.get_vector("right_stick_up","right_stick_down","right_stick_left","right_stick_right");
-	var zMove = wasd.x;
-	var xMove = wasd.y;
+	var xMove = leftStick.x;
+	var zMove = leftStick.y;
 	var direction = Vector3(0,0,0);
-	direction += zMove * transform.basis.x;
-	direction += xMove * transform.basis.z;
+	direction += xMove * transform.basis.x;
+	direction += zMove * transform.basis.z;
 	if direction.length() > 1:
 		direction = direction.normalized();
 	velocity = velocity.linear_interpolate(direction * speed, acceleration * delta);
