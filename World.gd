@@ -6,7 +6,7 @@ var j = 0; #x position
 var k = 0; #y-position
 
 func _ready():
-	cubeMesh(0,-2,-10,50,50);
+	makeACube(0,0,0,0,1,0,300,1,300);
 	makeASphere(0,0,-10,0,0,1);
 	tree(0,0,0);
 	tree(10,0,0);
@@ -62,19 +62,10 @@ func _physics_process(_delta):
 func makeACube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	var sb = StaticBody.new();
 	
-	# this doesn't seem to work:
-	# var cs = CollisionShape.new();
-	# cs.set_shape(BoxShape.new());
-	# sb.add_child(cs);
-	
 	var boxShape = BoxShape.new();
-	printStr("boxShape:",boxShape);
+	boxShape.extents = Vector3(xSize,ySize,zSize);
 	var owner = sb.create_shape_owner(sb);
-	printStr("owner:",owner); 
 	sb.shape_owner_add_shape(owner, boxShape);
-	
-	#printStr("collision_layer_bit:",sb.get_collision_layer_bit(0));
-	#printStr("collision_mask_bit:",sb.get_collision_mask_bit(0));
 	
 	var m = MeshInstance.new();
 	var cm = CubeMesh.new();
