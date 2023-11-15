@@ -10,7 +10,13 @@ var mouse_sensitivity = 0.05;
 
 onready var camera = $"/root/NotWaitingForGodot/Player/Camera";
 
+func playerStart(x=0,y=0,z=0):
+	print("changing player start")
+	set_global_translation(Vector3(x,y,z));
+
+
 func _ready():
+	print("player _ready")
 	print(str(camera));
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	#var camera = Camera.new();
