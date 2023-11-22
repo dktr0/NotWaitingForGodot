@@ -1,8 +1,8 @@
 extends Spatial
 
-
 func _ready():
-	$"/root/Player".playerStart(0,20,-20);
+	print("World::_ready()");
+	$"/root/NotWaitingForGodot/Player".playerStart(-2,2,-18);
 	makeACube(0,-1,0,0,1,0,800,1,800);
 	davidReady(0,0,0);
 	jackReady(0,0,40);

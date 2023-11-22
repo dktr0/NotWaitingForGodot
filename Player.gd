@@ -11,18 +11,12 @@ var mouse_sensitivity = 0.05;
 onready var camera = $"/root/NotWaitingForGodot/Player/Camera";
 
 func playerStart(x=0,y=0,z=0):
-	print("changing player start")
+	print("changing player start " + str(x) + " " + str(y) + " " + str(z));
 	set_global_translation(Vector3(x,y,z));
 
-
 func _ready():
-	print("player _ready")
-	print(str(camera));
+	print("Player::ready() " + name);
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	#var camera = Camera.new();
-	#camera.name ="Camera";
-	#add_child(camera);
-	# TODO: need to add collision shape from code instead of in node graph
 
 func _input(event):	
 	if event is InputEventMouseMotion:
