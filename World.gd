@@ -2,106 +2,106 @@ extends Spatial
 
 func _ready():
 	print("World::_ready()");
-	$"/root/NotWaitingForGodot/Player".playerStart(-2,2,-18);
-	makeACube(0,-1,0,0,1,0,800,1,800);
-	davidReady(0,0,0);
-	jackReady(0,0,40);
-	nadiaReady(0,0,80);
-	leoReady(0,0,120);
+	$"/root/NotWaitingForGodot/Player".playerStart(2,31,-18);
+	# makeACube(0,-1,0,0,1,0,800,1,800);
+	davidReady(0,30,0,5);
+	jackReady(0,20,0,5);
+	nadiaReady(0,10,0,5);
+	leoReady(0,0,0,5);
 
-func davidReady(x=0,y=0,z=0):
-	cubeRow("                    ",x+0,y+0,z-20,2,0,1,1,0);
-	cubeRow("+++++++             ",x+0,y+0,z-18,2,0,1,1,0);
-	cubeRow("      +         +++ ",x+0,y+0,z-16,2,0,1,1,0);
-	cubeRow("      +++++++   + + ",x+0,y+0,z-14,2,0,1,1,0);
-	cubeRow("      +     +++++ + ",x+0,y+0,z-12,2,0,1,1,0);
-	cubeRow("   ++++++   +++   + ",x+0,y+0,z-10,2,0,1,1,0);
-	cubeRow("   +    +   ++    + ",x+0,y+0,z-8,2,0,1,1,0);
-	cubeRow("   ++   +   +     + ",x+0,y+0,z-6,2,0,1,1,0);
-	cubeRow("    +   +   +     + ",x+0,y+0,z-4,2,0,1,1,0);
-	cubeRow("  +++   +   +     + ",x+0,y+0,z-2,2,0,1,1,0);
-	cubeRow("  +   +++   +     + ",x+0,y+0,z+0,2,0,1,1,0);
-	cubeRow("  +   +     +     + ",x+0,y+0,z+2,2,0,1,1,0);
-	cubeRow("  +      ++++     + ",x+0,y+0,z+4,2,0,1,1,0);
-	cubeRow("  ++++++++    +++++ ",x+0,y+0,z+6,2,0,1,1,0);
-	cubeRow("              +     ",x+0,y+0,z+8,2,0,1,1,0);
-	cubeRow("      ++++++++++++  ",x+0,y+0,z+10,2,0,1,1,0);
-	cubeRow("  +++++          +  ",x+0,y+0,z+12,2,0,1,1,0);
-	cubeRow("  +   ++++++++++++  ",x+0,y+0,z+14,2,0,1,1,0);
-	cubeRow("  +     +           ",x+0,y+0,z+16,2,0,1,1,0);
-	cubeRow("  +                 ",x+0,y+0,z+18,2,0,1,1,0);
+func davidReady(x=0,y=0,z=0,yScale=2):
+	cubeRow("                    ",x+0,y+0,z-20,2,0,1,1,0,yScale);
+	cubeRow(" ++++++             ",x+0,y+0,z-18,2,0,1,1,0,yScale);
+	cubeRow("      +         +++ ",x+0,y+0,z-16,2,0,1,1,0,yScale);
+	cubeRow("      +++++++   + + ",x+0,y+0,z-14,2,0,1,1,0,yScale);
+	cubeRow("      +     +++++ + ",x+0,y+0,z-12,2,0,1,1,0,yScale);
+	cubeRow("   ++++++   +++   + ",x+0,y+0,z-10,2,0,1,1,0,yScale);
+	cubeRow("   +    +   ++    + ",x+0,y+0,z-8,2,0,1,1,0,yScale);
+	cubeRow("   ++   +   +     + ",x+0,y+0,z-6,2,0,1,1,0,yScale);
+	cubeRow("    +   +   +     + ",x+0,y+0,z-4,2,0,1,1,0,yScale);
+	cubeRow("  +++   +   +     + ",x+0,y+0,z-2,2,0,1,1,0,yScale);
+	cubeRow("  +   +++   +     + ",x+0,y+0,z+0,2,0,1,1,0,yScale);
+	cubeRow("  +++++     +     + ",x+0,y+0,z+2,2,0,1,1,0,yScale);
+	cubeRow("  +      ++++     + ",x+0,y+0,z+4,2,0,1,1,0,yScale);
+	cubeRow("  ++++++++    +++++ ",x+0,y+0,z+6,2,0,1,1,0,yScale);
+	cubeRow("         +    +     ",x+0,y+0,z+8,2,0,1,1,0,yScale);
+	cubeRow("      ++++ ++++     ",x+0,y+0,z+10,2,0,1,1,0,yScale);
+	cubeRow("  +++++    +        ",x+0,y+0,z+12,2,0,1,1,0,yScale);
+	cubeRow("  +   +++  ++++     ",x+0,y+0,z+14,2,0,1,1,0,yScale);
+	cubeRow("  +     +     O     ",x+0,y+0,z+16,2,0,1,1,0,yScale);
+	cubeRow("                    ",x+0,y+0,z+18,2,0,1,1,0,yScale);
 
-func jackReady(x=0, y=0, z=0):
-	cubeRow ("..+.................",x+0,y+0,z-20, 2, 0, 1, 1, 1);
-	cubeRow ("  +    ++++++++++++ ",x+0,y+0,z-18, 2, 0, 1, 1, 1);
-	cubeRow ("  ++++++            ",x+0,y+0,z-16, 2, 0, 1, 1, 1); 
-	cubeRow ("    +++           + ",x+0,y+0,z-14, 2, 0, 1, 1, 1);
-	cubeRow ("     +++         ++ ",x+0,y+0,z-12, 2, 0, 1, 1, 1);
-	cubeRow ("       +       +++  ",x+0,y+0,z-10, 2, 0, 1, 1, 1);
-	cubeRow ("     +++      ++    ",x+0,y+0,z-8, 2, 0, 1, 1, 1);
-	cubeRow ("       ++ +  ++     ",x+0,y+0,z-6, 2, 0, 1, 1, 1);
-	cubeRow ("        ++++++      ",x+0,y+0,z-4, 2, 0, 1, 1, 1);
-	cubeRow ("            +++++++ ",x+0,y+0,z-2, 2, 0, 1, 1, 1);
-	cubeRow ("        ++++++   ++ ",x+0,y+0,z+0, 2, 0, 1, 1, 1);
-	cubeRow (" ++++++++        +  ",x+0,y+0,z+2, 2, 0, 1, 1, 1);
-	cubeRow (" +      ++++     +  ",x+0,y+0,z+4, 2, 0, 1, 1, 1);
-	cubeRow (" ++++++++++      +  ",x+0,y+0,z+6, 2, 0, 1, 1, 1);
-	cubeRow ("       +++       +  ",x+0,y+0,z+8, 2, 0, 1, 1, 1);
-	cubeRow ("      +++++++    +  ",x+0,y+0,z+10, 2, 0, 1, 1, 1);
-	cubeRow (" +        ++        ",x+0,y+0,z+12, 2, 0, 1, 1, 1);
-	cubeRow (" +++     ++++++++++ ",x+0,y+0,z+14, 2, 0, 1, 1, 1);
-	cubeRow (" ++++++++++++       ",x+0,y+0,z+16, 2, 0, 1, 1, 1);
-	cubeRow (" +                  ",x+0,y+0,z+18, 2, 0, 1, 1, 1);
+func jackReady(x=0, y=0, z=0, yScale=2):
+	cubeRow ("....................",x+0,y+0,z-20, 2, 0, 1, 1, 1,yScale);
+	cubeRow ("  +    +++++++++    ",x+0,y+0,z-18, 2, 0, 1, 1, 1,yScale);
+	cubeRow ("  ++++++    +  +    ",x+0,y+0,z-16, 2, 0, 1, 1, 1,yScale);
+	cubeRow ("    ++++++  +     + ",x+0,y+0,z-14, 2, 0, 1, 1, 1,yScale);
+	cubeRow ("     +++ ++ +    ++ ",x+0,y+0,z-12, 2, 0, 1, 1, 1,yScale);
+	cubeRow ("       +  +++  +++  ",x+0,y+0,z-10, 2, 0, 1, 1, 1,yScale);
+	cubeRow ("     +++      ++    ",x+0,y+0,z-8, 2, 0, 1, 1, 1,yScale);
+	cubeRow ("       ++++  ++     ",x+0,y+0,z-6, 2, 0, 1, 1, 1,yScale);
+	cubeRow ("    +   ++++++      ",x+0,y+0,z-4, 2, 0, 1, 1, 1,yScale);
+	cubeRow ("    +       +++++++ ",x+0,y+0,z-2, 2, 0, 1, 1, 1,yScale);
+	cubeRow ("    +   ++++++   ++ ",x+0,y+0,z+0, 2, 0, 1, 1, 1,yScale);
+	cubeRow (" ++++++++        +  ",x+0,y+0,z+2, 2, 0, 1, 1, 1,yScale);
+	cubeRow (" +      ++++     +  ",x+0,y+0,z+4, 2, 0, 1, 1, 1,yScale);
+	cubeRow (" ++++++++++     0+  ",x+0,y+0,z+6, 2, 0, 1, 1, 1,yScale);
+	cubeRow ("       +++       +  ",x+0,y+0,z+8, 2, 0, 1, 1, 1,yScale);
+	cubeRow ("      +++++++    +  ",x+0,y+0,z+10, 2, 0, 1, 1, 1,yScale);
+	cubeRow (" +        ++        ",x+0,y+0,z+12, 2, 0, 1, 1, 1,yScale);
+	cubeRow (" +++      +++++++++ ",x+0,y+0,z+14, 2, 0, 1, 1, 1,yScale);
+	cubeRow (" ++++++++++++++++   ",x+0,y+0,z+16, 2, 0, 1, 1, 1,yScale);
+	cubeRow ("                    ",x+0,y+0,z+18, 2, 0, 1, 1, 1,yScale);
 	
-func nadiaReady(x=0, y=0, z=0):
-	cubeRow(".++.................", x,y+0,z-20,2,0,0,0,0);
-	cubeRow("  +++               ", x,y+0,z-18,2,0, 0,0,0);
-	cubeRow("    +++++++++++     ", x,y+0,z-16,2,0, 0,0,0);
-	cubeRow("     ++       +++++ ", x,y+0,z-14,2,0, 0,0,0);
-	cubeRow("     +++      ++    ", x,y+0,z-12,2,0, 0.5,0,0);
-	cubeRow("    ++  +     ++    ", x,y+0,z-10,2,0, 0,0,0);
-	cubeRow("   ++   +++++++     ", x,y+0,z-8,2,0, 0,0,0);
-	cubeRow("  +++    ++         ", x,y+0,z-6,2,0, 0,0,0);
-	cubeRow("+++      +++        ", x,y+0,z-4,2,0, 0,0,0);
-	cubeRow("+++        ++       ", x,y+0,z-2,2,0,0,0,0);
-	cubeRow("      +++++++       ", x,y+0,z-0,2,0, 0,0,0);
-	cubeRow("      +     +       ", x,y+0,z+2,2,0, 0,0,0);
-	cubeRow("    +++ ++++++      ", x,y+0,z+4,2,0, 0,0,0);
-	cubeRow("        +    +      ", x,y+0,z+6,2,0, 0,0,0);
-	cubeRow("        +     +     ", x,y+0,z+8,2,0, 0,0,0);
-	cubeRow("     ++++      ++++ ", x,y+0,z+10,2,0, 0,0,0);
-	cubeRow("   +++  ++      ++  ", x,y+0,z+12,2,0, 0,0,0);
-	cubeRow(" ++++   ++       ++ ", x,y+0,z+14,2,0, 0,0,0);
-	cubeRow("    +            ++ ", x,y+0,z+16,2,0, 0,0,0);
-	cubeRow("..+++...............", x,y+0,z+18,2,0, 0,0,0);
+func nadiaReady(x=0, y=0, z=0,yScale=2):
+	cubeRow("....................", x,y+0,z-20,2,0,0,0,0,yScale);
+	cubeRow("  +++               ", x,y+0,z-18,2,0, 0,0,0,yScale);
+	cubeRow("    +++++o+++++     ", x,y+0,z-16,2,0, 0,0,0,yScale);
+	cubeRow("     ++  oo   +++++ ", x,y+0,z-14,2,0, 0,0,0,yScale);
+	cubeRow("     +++      ++    ", x,y+0,z-12,2,0, 0.5,0,0,yScale);
+	cubeRow("    ++  +     ++    ", x,y+0,z-10,2,0, 0,0,0,yScale);
+	cubeRow("   ++   +++++++     ", x,y+0,z-8,2,0, 0,0,0,yScale);
+	cubeRow("  +++    ++         ", x,y+0,z-6,2,0, 0,0,0,yScale);
+	cubeRow(" ++      +++        ", x,y+0,z-4,2,0, 0,0,0,yScale);
+	cubeRow(" ++        ++       ", x,y+0,z-2,2,0,0,0,0,yScale);
+	cubeRow(" ++   +++ +++       ", x,y+0,z-0,2,0, 0,0,0,yScale);
+	cubeRow(" ++  ++    ++       ", x,y+0,z+2,2,0, 0,0,0,yScale);
+	cubeRow(" ++++++ ++++++      ", x,y+0,z+4,2,0, 0,0,0,yScale);
+	cubeRow("       ++    ++++++ ", x,y+0,z+6,2,0, 0,0,0,yScale);
+	cubeRow("       ++     ++    ", x,y+0,z+8,2,0, 0,0,0,yScale);
+	cubeRow("     ++++      ++++ ", x,y+0,z+10,2,0, 0,0,0,yScale);
+	cubeRow("   +++  ++++++++++  ", x,y+0,z+12,2,0, 0,0,0,yScale);
+	cubeRow(" ++++   ++       ++ ", x,y+0,z+14,2,0, 0,0,0,yScale);
+	cubeRow("    ++           ++ ", x,y+0,z+16,2,0, 0,0,0,yScale);
+	cubeRow("....................", x,y+0,z+18,2,0, 0,0,0,yScale);
 	
-func leoReady(x=0,y=0,z=0):
-	cubeRow(" ++         ++       ", x+0,y+0,z-20,2,0, 1,1,0);
-	cubeRow(" +  ++++++++++      ", x+0,y+0,z-18,2,0, 1,1,0);
-	cubeRow(" +++++      ++      ", x+0,y+0,z-16,2,0, 1,1,0);
-	cubeRow("          ++++++    ", x+0,y+0,z-14,2,0, 1,1,0);
-	cubeRow("    +++++      +    ", x+0,y+0,z-12,2,0, 1,1,0);
-	cubeRow("   +++  +      +    ", x+0,y+0,z-10,2,0, 1,1,0);
-	cubeRow("    ++  +      +    ", x+0,y+0,z-8,2,0, 1,1,0);
-	cubeRow("   +++++++++   +    ", x+0,y+0,z-6,2,0, 1,1,0);
-	cubeRow("   +           +    ", x+0,y+0,z-4,2,0, 1,1,0);
-	cubeRow("   +     ++   ++    ", x+0,y+0,z-2,2,0, 1,1,0);
-	cubeRow("   +  ++++++   +    ", x+0,y+0,z-0,2,0, 1,1,0);
-	cubeRow("   +++++   +++++    ", x+0,y+0,z+2,2,0, 1,1,0);
-	cubeRow("    +         +++   ", x+0,y+0,z+4,2,0, 1,1,0);
-	cubeRow("    +     ++++++    ", x+0,y+0,z+6,2,0, 1,1,0);
-	cubeRow("   ++        ++     ", x+0,y+0,z+8,2,0, 1,1,0);
-	cubeRow("   +         ++     ", x+0,y+0,z+10,2,0, 1,1,0);
-	cubeRow("+++++   ++++++  ++++", x+0,y+0,z+12,2,0, 1,1,0);
-	cubeRow("++++++          ++++", x+0,y+0,z+14,2,0, 1,1,0);
-	cubeRow("+++++  +++++++  ++++", x+0,y+0,z+16,2,0, 1,1,0);
-	cubeRow("++++  ++++++++  ++++", x+0,y+0,z+18,2,0, 1,1,0);		
+func leoReady(x=0,y=0,z=0,yScale=2):
+	cubeRow("                    ", x+0,y+0,z-20,2,0, 1,1,0,yScale);
+	cubeRow(" ++         ++      ", x+0,y+0,z-18,2,0, 1,1,0,yScale);
+	cubeRow(" +  ++++++++++      ", x+0,y+0,z-16,2,0, 1,1,0,yScale);
+	cubeRow("    +  +++++  ++    ", x+0,y+0,z-14,2,0, 1,1,0,yScale);
+	cubeRow("    +++++ ++++++    ", x+0,y+0,z-12,2,0, 1,1,0,yScale);
+	cubeRow("   +++  +      +    ", x+0,y+0,z-10,2,0, 1,1,0,yScale);
+	cubeRow("    ++  +      +    ", x+0,y+0,z-8,2,0, 1,1,0,yScale);
+	cubeRow("   +++++++++++++    ", x+0,y+0,z-6,2,0, 1,1,0,yScale);
+	cubeRow("   + +      +  +    ", x+0,y+0,z-4,2,0, 1,1,0,yScale);
+	cubeRow("   +++ ++++ ++++    ", x+0,y+0,z-2,2,0, 1,1,0,yScale);
+	cubeRow("   +   + ++    +    ", x+0,y+0,z-0,2,0, 1,1,0,yScale);
+	cubeRow("   +++++  ++++++    ", x+0,y+0,z+2,2,0, 1,1,0,yScale);
+	cubeRow("    +     +   +++   ", x+0,y+0,z+4,2,0, 1,1,0,yScale);
+	cubeRow("    +  + +++++++ +  ", x+0,y+0,z+6,2,0, 1,1,0,yScale);
+	cubeRow("   ++  + +   +   +  ", x+0,y+0,z+8,2,0, 1,1,0,yScale);
+	cubeRow("   +   +++   +   +  ", x+0,y+0,z+10,2,0, 1,1,0,yScale);
+	cubeRow(" ++++   ++++++ ++++ ", x+0,y+0,z+12,2,0, 1,1,0,yScale);
+	cubeRow(" +  +   +      +  + ", x+0,y+0,z+14,2,0, 1,1,0,yScale);
+	cubeRow(" ++++  ++++++  ++++ ", x+0,y+0,z+16,2,0, 1,1,0,yScale);
+	cubeRow("          0000      ", x+0,y+0,z+18,2,0, 1,1,0,yScale);        
 				
 func makeACube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	var sb = StaticBody.new();
 	
 	var boxShape = BoxShape.new();
-	boxShape.extents = Vector3(xSize/2,ySize/2,zSize/2);
+	boxShape.extents = Vector3(xSize*0.5,ySize*0.5,zSize*0.5);
 	var owner = sb.create_shape_owner(sb);
 	sb.shape_owner_add_shape(owner, boxShape);
 	
@@ -128,13 +128,18 @@ func makeASphere(x=0,y=0,z=0,r=1,g=0,b=0):
 	m.translation = Vector3(x,y,z);
 	add_child(m);
 	
-func cubeRow(spec="",x=0,y=0,z=0,xInc=2,zInc=0,r=1,g=0,b=0):
+func cubeRow(spec="",x=0,y=0,z=0,xInc=2,zInc=0,r=1,g=0,b=0,yScale=2):
 	var head = spec.substr(0,1);
 	var tail = spec.substr(1,-1);
 	while head.length() > 0:
 		if head == " " || head == "." :
 			# print("putting a cube at " + str(x) + " " + str(y) + " " + str(z));
-			makeACube(x,y,z,r,g,b);
+			makeACube(x,y,z,r,g,b,2,yScale,2);
+			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
+		elif head == "0" || head =="O" || head =="o":
+			pass;
+		else:
+			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
 		x = x + xInc;
 		z = z + zInc;
 		head = tail.substr(0,1);
@@ -192,7 +197,7 @@ func tropicalLeaves(x=0,y=6.6,z=0,xInc=0.5,zInc=0.5):
 
 func tTree(x=0,y=0,z=0):
 	tropicalTree(10,0+x,0+y,0+z,0,0.66,0,0.9,0.8,0.3);
-	tropicalLeaves(0+x,6.6+y,0+z,0.5,0.5);	
+	tropicalLeaves(0+x,6.6+y,0+z,0.5,0.5);    
 
 func house (x=0, y=0, z=0):
 	cubeVector(10,0+x,0+y,0+z,0,1,0,0,1,1); #corner
@@ -243,3 +248,5 @@ func glitchyDecoration(x=0,y=0,z=0):
 	cubeVector(10,0+x,0+y,2+z,0,2,0,0,0,1);
 	cubeVector(10,0+x,0+y,3+z,0,3,0,1,0,1);
 	cubeVector(10,0+x,0+y,4+z,0,4,0,1,0,0);
+
+
