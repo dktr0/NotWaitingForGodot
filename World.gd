@@ -2,12 +2,8 @@ extends Spatial
 
 func _ready():
 	print("World::_ready()");
-	$"/root/NotWaitingForGodot/Player".playerStart(2,31,-18);
-	# makeACube(0,-1,0,0,1,0,800,1,800);
-	davidReady(0,30,0,5);
-	jackReady(0,20,0,5);
-	nadiaReady(0,10,0,5);
-	leoReady(0,0,0,5);
+	$"/root/NotWaitingForGodot/Player".playerStart(2,2,-19);
+	loadCSVMap();
 
 func davidReady(x=0,y=0,z=0,yScale=2):
 	cubeRow("                    ",x+0,y+0,z-20,2,0,1,1,0,yScale);
@@ -250,3 +246,41 @@ func glitchyDecoration(x=0,y=0,z=0):
 	cubeVector(10,0+x,0+y,4+z,0,4,0,1,0,0);
 
 
+func loadMaze(path="res://map.txt"):
+	print("loading maze called " + path);
+	var file = File.new();
+	file.open(path, File.READ);
+	var map = file.get_as_text();
+	var lines = map.split("\n");
+	print(str(lines));
+	for lineNo in lines.size():
+		print("line " + str(lineNo) + ": " + lines[lineNo]);
+		cubeRow(lines[lineNo],0,0,-20+(lineNo*2),2,0,1,0,0,5);
+		
+func loadCSVMap(path="res://map.txt"):
+	print("loading CSV map called " + path);
+	var file = File.new();
+	file.open(path, File.READ);
+	var map = file.get_as_text();
+	var rows = map.split("\n");
+	for rowNo in rows.size():
+		print("row " + str(rowNo) + ": " + rows[rowNo]);
+		csvMapRow(rows[rowNo],0,0,-20+(rowNo*2),2,0,0,1,0,0,5);
+		
+func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=1,yScale=5):
+	var cells = row.split(",");
+	for cellNo in cells.size():
+		var cell = cells[cellNo];
+		var x = xStart + (xInc * cellNo);
+		var y = yStart + (yInc * cellNo);
+		var z = zStart + (zInc * cellNo);
+		if cell == " " || cell == "." || cell == "":
+			print("solid");
+			# print("putting a cube at " + str(x) + " " + str(y) + " " + str(z));
+			makeACube(x,y,z,r,g,b,2,yScale,2);
+			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
+		elif cell == "0" || cell =="O" || cell =="o":
+			print("hole");
+		elif cell == "v" || cell == "m":
+			print("passable square");
+			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
