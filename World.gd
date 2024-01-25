@@ -112,6 +112,33 @@ func makeACube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	sb.translation = Vector3(x,y,z);
 	add_child(sb);
 	
+func movableCube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2,axisLock=""):
+	var sb = RigidBody.new();
+	if axisLock.find("x")>=0:
+		sb.axis_lock_angular_x = true;
+		sb.axis_lock_linear_x = true;
+	elif axisLock.find("y")>=0:
+		sb.axis_lock_angular_y = true;
+		sb.axis_lock_linear_y = true;		
+	elif axisLock.find("z")>=0:
+		sb.axis_lock_angular_z = true;
+		sb.axis_lock_linear_z = true;
+	var boxShape = BoxShape.new();
+	boxShape.extents = Vector3(xSize*0.5,ySize*0.5,zSize*0.5);
+	var owner = sb.create_shape_owner(sb);
+	sb.shape_owner_add_shape(owner, boxShape);
+	
+	var m = MeshInstance.new();
+	var cm = CubeMesh.new();
+	cm.size = Vector3(xSize,ySize,zSize);
+	var sm = SpatialMaterial.new();
+	sm.albedo_color = Color( r, g, b, 1 );
+	cm.material = sm;
+	m.mesh = cm;
+	sb.add_child(m);
+	sb.translation = Vector3(x,y,z);
+	add_child(sb);
+	
 func makeASphere(x=0,y=0,z=0,r=1,g=0,b=0):
 	print("makeASphere");
 	var m = MeshInstance.new();
@@ -270,17 +297,30 @@ func loadCSVMap(path="res://map.txt"):
 func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=1,yScale=5):
 	var cells = row.split(",");
 	for cellNo in cells.size():
-		var cell = cells[cellNo];
+		var cell = cells[cellNo].to_lower();
 		var x = xStart + (xInc * cellNo);
 		var y = yStart + (yInc * cellNo);
 		var z = zStart + (zInc * cellNo);
-		if cell == " " || cell == "." || cell == "":
-			print("solid");
-			# print("putting a cube at " + str(x) + " " + str(y) + " " + str(z));
+		if cell == "s": # impassable
 			makeACube(x,y,z,r,g,b,2,yScale,2);
+			makeACube(x,y-yScale,z,r,g,b,2,yScale,2); # movable
+		elif cell == "b":
+			movableCube(x,y,z,r,g,b,2,yScale,2);
 			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
-		elif cell == "0" || cell =="O" || cell =="o":
-			print("hole");
-		elif cell == "v" || cell == "m":
-			print("passable square");
+		elif cell == "m":
+			movableCube(x,y,z,r,g,b,2,yScale,2,"y");
 			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
+		elif cell == "mx":
+			movableCube(x,y,z,r,g,b,2,yScale,2,"yz");
+			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
+		elif cell == "mz":
+			movableCube(x,y,z,r,g,b,2,yScale,"xy");
+			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
+		elif cell == "t":
+			tTree(x,y,z);
+			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
+		elif cell == "0" || cell =="o": # hole
+			pass;
+		else:
+			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
+			
