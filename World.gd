@@ -2,7 +2,7 @@ extends Spatial
 
 func _ready():
 	print("World::_ready()");
-	$"/root/NotWaitingForGodot/Player".playerStart(2,2,-19);
+	$"/root/NotWaitingForGodot/Player".playerStart(2,3,-19);
 	loadCSVMap();
 
 func davidReady(x=0,y=0,z=0,yScale=2):
