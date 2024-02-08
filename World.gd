@@ -4,96 +4,9 @@ func _ready():
 	print("World::_ready()");
 	$"/root/NotWaitingForGodot/Player".playerStart(2,3,-19);
 	loadCSVMap();
-
-func davidReady(x=0,y=0,z=0,yScale=2):
-	cubeRow("                    ",x+0,y+0,z-20,2,0,1,1,0,yScale);
-	cubeRow(" ++++++             ",x+0,y+0,z-18,2,0,1,1,0,yScale);
-	cubeRow("      +         +++ ",x+0,y+0,z-16,2,0,1,1,0,yScale);
-	cubeRow("      +++++++   + + ",x+0,y+0,z-14,2,0,1,1,0,yScale);
-	cubeRow("      +     +++++ + ",x+0,y+0,z-12,2,0,1,1,0,yScale);
-	cubeRow("   ++++++   +++   + ",x+0,y+0,z-10,2,0,1,1,0,yScale);
-	cubeRow("   +    +   ++    + ",x+0,y+0,z-8,2,0,1,1,0,yScale);
-	cubeRow("   ++   +   +     + ",x+0,y+0,z-6,2,0,1,1,0,yScale);
-	cubeRow("    +   +   +     + ",x+0,y+0,z-4,2,0,1,1,0,yScale);
-	cubeRow("  +++   +   +     + ",x+0,y+0,z-2,2,0,1,1,0,yScale);
-	cubeRow("  +   +++   +     + ",x+0,y+0,z+0,2,0,1,1,0,yScale);
-	cubeRow("  +++++     +     + ",x+0,y+0,z+2,2,0,1,1,0,yScale);
-	cubeRow("  +      ++++     + ",x+0,y+0,z+4,2,0,1,1,0,yScale);
-	cubeRow("  ++++++++    +++++ ",x+0,y+0,z+6,2,0,1,1,0,yScale);
-	cubeRow("         +    +     ",x+0,y+0,z+8,2,0,1,1,0,yScale);
-	cubeRow("      ++++ ++++     ",x+0,y+0,z+10,2,0,1,1,0,yScale);
-	cubeRow("  +++++    +        ",x+0,y+0,z+12,2,0,1,1,0,yScale);
-	cubeRow("  +   +++  ++++     ",x+0,y+0,z+14,2,0,1,1,0,yScale);
-	cubeRow("  +     +     O     ",x+0,y+0,z+16,2,0,1,1,0,yScale);
-	cubeRow("                    ",x+0,y+0,z+18,2,0,1,1,0,yScale);
-
-func jackReady(x=0, y=0, z=0, yScale=2):
-	cubeRow ("....................",x+0,y+0,z-20, 2, 0, 1, 1, 1,yScale);
-	cubeRow ("  +    +++++++++    ",x+0,y+0,z-18, 2, 0, 1, 1, 1,yScale);
-	cubeRow ("  ++++++    +  +    ",x+0,y+0,z-16, 2, 0, 1, 1, 1,yScale);
-	cubeRow ("    ++++++  +     + ",x+0,y+0,z-14, 2, 0, 1, 1, 1,yScale);
-	cubeRow ("     +++ ++ +    ++ ",x+0,y+0,z-12, 2, 0, 1, 1, 1,yScale);
-	cubeRow ("       +  +++  +++  ",x+0,y+0,z-10, 2, 0, 1, 1, 1,yScale);
-	cubeRow ("     +++      ++    ",x+0,y+0,z-8, 2, 0, 1, 1, 1,yScale);
-	cubeRow ("       ++++  ++     ",x+0,y+0,z-6, 2, 0, 1, 1, 1,yScale);
-	cubeRow ("    +   ++++++      ",x+0,y+0,z-4, 2, 0, 1, 1, 1,yScale);
-	cubeRow ("    +       +++++++ ",x+0,y+0,z-2, 2, 0, 1, 1, 1,yScale);
-	cubeRow ("    +   ++++++   ++ ",x+0,y+0,z+0, 2, 0, 1, 1, 1,yScale);
-	cubeRow (" ++++++++        +  ",x+0,y+0,z+2, 2, 0, 1, 1, 1,yScale);
-	cubeRow (" +      ++++     +  ",x+0,y+0,z+4, 2, 0, 1, 1, 1,yScale);
-	cubeRow (" ++++++++++     0+  ",x+0,y+0,z+6, 2, 0, 1, 1, 1,yScale);
-	cubeRow ("       +++       +  ",x+0,y+0,z+8, 2, 0, 1, 1, 1,yScale);
-	cubeRow ("      +++++++    +  ",x+0,y+0,z+10, 2, 0, 1, 1, 1,yScale);
-	cubeRow (" +        ++        ",x+0,y+0,z+12, 2, 0, 1, 1, 1,yScale);
-	cubeRow (" +++      +++++++++ ",x+0,y+0,z+14, 2, 0, 1, 1, 1,yScale);
-	cubeRow (" ++++++++++++++++   ",x+0,y+0,z+16, 2, 0, 1, 1, 1,yScale);
-	cubeRow ("                    ",x+0,y+0,z+18, 2, 0, 1, 1, 1,yScale);
-	
-func nadiaReady(x=0, y=0, z=0,yScale=2):
-	cubeRow("....................", x,y+0,z-20,2,0,0,0,0,yScale);
-	cubeRow("  +++               ", x,y+0,z-18,2,0, 0,0,0,yScale);
-	cubeRow("    +++++o+++++     ", x,y+0,z-16,2,0, 0,0,0,yScale);
-	cubeRow("     ++  oo   +++++ ", x,y+0,z-14,2,0, 0,0,0,yScale);
-	cubeRow("     +++      ++    ", x,y+0,z-12,2,0, 0.5,0,0,yScale);
-	cubeRow("    ++  +     ++    ", x,y+0,z-10,2,0, 0,0,0,yScale);
-	cubeRow("   ++   +++++++     ", x,y+0,z-8,2,0, 0,0,0,yScale);
-	cubeRow("  +++    ++         ", x,y+0,z-6,2,0, 0,0,0,yScale);
-	cubeRow(" ++      +++        ", x,y+0,z-4,2,0, 0,0,0,yScale);
-	cubeRow(" ++        ++       ", x,y+0,z-2,2,0,0,0,0,yScale);
-	cubeRow(" ++   +++ +++       ", x,y+0,z-0,2,0, 0,0,0,yScale);
-	cubeRow(" ++  ++    ++       ", x,y+0,z+2,2,0, 0,0,0,yScale);
-	cubeRow(" ++++++ ++++++      ", x,y+0,z+4,2,0, 0,0,0,yScale);
-	cubeRow("       ++    ++++++ ", x,y+0,z+6,2,0, 0,0,0,yScale);
-	cubeRow("       ++     ++    ", x,y+0,z+8,2,0, 0,0,0,yScale);
-	cubeRow("     ++++      ++++ ", x,y+0,z+10,2,0, 0,0,0,yScale);
-	cubeRow("   +++  ++++++++++  ", x,y+0,z+12,2,0, 0,0,0,yScale);
-	cubeRow(" ++++   ++       ++ ", x,y+0,z+14,2,0, 0,0,0,yScale);
-	cubeRow("    ++           ++ ", x,y+0,z+16,2,0, 0,0,0,yScale);
-	cubeRow("....................", x,y+0,z+18,2,0, 0,0,0,yScale);
-	
-func leoReady(x=0,y=0,z=0,yScale=2):
-	cubeRow("                    ", x+0,y+0,z-20,2,0, 1,1,0,yScale);
-	cubeRow(" ++         ++      ", x+0,y+0,z-18,2,0, 1,1,0,yScale);
-	cubeRow(" +  ++++++++++      ", x+0,y+0,z-16,2,0, 1,1,0,yScale);
-	cubeRow("    +  +++++  ++    ", x+0,y+0,z-14,2,0, 1,1,0,yScale);
-	cubeRow("    +++++ ++++++    ", x+0,y+0,z-12,2,0, 1,1,0,yScale);
-	cubeRow("   +++  +      +    ", x+0,y+0,z-10,2,0, 1,1,0,yScale);
-	cubeRow("    ++  +      +    ", x+0,y+0,z-8,2,0, 1,1,0,yScale);
-	cubeRow("   +++++++++++++    ", x+0,y+0,z-6,2,0, 1,1,0,yScale);
-	cubeRow("   + +      +  +    ", x+0,y+0,z-4,2,0, 1,1,0,yScale);
-	cubeRow("   +++ ++++ ++++    ", x+0,y+0,z-2,2,0, 1,1,0,yScale);
-	cubeRow("   +   + ++    +    ", x+0,y+0,z-0,2,0, 1,1,0,yScale);
-	cubeRow("   +++++  ++++++    ", x+0,y+0,z+2,2,0, 1,1,0,yScale);
-	cubeRow("    +     +   +++   ", x+0,y+0,z+4,2,0, 1,1,0,yScale);
-	cubeRow("    +  + +++++++ +  ", x+0,y+0,z+6,2,0, 1,1,0,yScale);
-	cubeRow("   ++  + +   +   +  ", x+0,y+0,z+8,2,0, 1,1,0,yScale);
-	cubeRow("   +   +++   +   +  ", x+0,y+0,z+10,2,0, 1,1,0,yScale);
-	cubeRow(" ++++   ++++++ ++++ ", x+0,y+0,z+12,2,0, 1,1,0,yScale);
-	cubeRow(" +  +   +      +  + ", x+0,y+0,z+14,2,0, 1,1,0,yScale);
-	cubeRow(" ++++  ++++++  ++++ ", x+0,y+0,z+16,2,0, 1,1,0,yScale);
-	cubeRow("          0000      ", x+0,y+0,z+18,2,0, 1,1,0,yScale);        
 				
 func makeACube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
+	print("makeACube")
 	var sb = StaticBody.new();
 	
 	var boxShape = BoxShape.new();
@@ -109,6 +22,15 @@ func makeACube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	cm.material = sm;
 	m.mesh = cm;
 	sb.add_child(m);
+	sb.translation = Vector3(x,y,z);
+	add_child(sb);
+	
+func invisibleCube(x=0,y=0,z=0,xSize=2,ySize=2,zSize=2):
+	var sb = StaticBody.new();
+	var boxShape = BoxShape.new();
+	boxShape.extents = Vector3(xSize*0.5,ySize*0.5,zSize*0.5);
+	var owner = sb.create_shape_owner(sb);
+	sb.shape_owner_add_shape(owner, boxShape);
 	sb.translation = Vector3(x,y,z);
 	add_child(sb);
 	
@@ -292,7 +214,7 @@ func loadCSVMap(path="res://map.txt"):
 	var rows = map.split("\n");
 	for rowNo in rows.size():
 		print("row " + str(rowNo) + ": " + rows[rowNo]);
-		csvMapRow(rows[rowNo],0,0,-20+(rowNo*2),2,0,0,1,0,0,5);
+		csvMapRow(rows[rowNo],0,0,-20+(rowNo*2),2,0,0,1,0,0,2.5);
 		
 func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=1,yScale=5):
 	var cells = row.split(",");
@@ -301,26 +223,41 @@ func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=
 		var x = xStart + (xInc * cellNo);
 		var y = yStart + (yInc * cellNo);
 		var z = zStart + (zInc * cellNo);
-		if cell == "s": # impassable
-			makeACube(x,y,z,r,g,b,2,yScale,2);
-			makeACube(x,y-yScale,z,r,g,b,2,yScale,2); # movable
-		elif cell == "b":
-			movableCube(x,y,z,r,g,b,2,yScale,2);
-			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
-		elif cell == "m":
-			movableCube(x,y,z,r,g,b,2,yScale,2,"y");
-			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
-		elif cell == "mx":
-			movableCube(x,y,z,r,g,b,2,yScale,2,"yz");
-			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
-		elif cell == "mz":
-			movableCube(x,y,z,r,g,b,2,yScale,"xy");
-			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
-		elif cell == "t":
-			tTree(x,y,z);
-			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
-		elif cell == "0" || cell =="o": # hole
-			pass;
-		else:
-			makeACube(x,y-yScale,z,r,g,b,2,yScale,2);
-			
+		var substance = "grass";
+		var h = 0;
+		if cell.find("w")>=0:
+			substance = "water";
+		if cell.find("s")>=0:
+			substance = "stone";
+		if cell.find("1")>=0:
+			h = 1;
+		if cell.find("2")>=0:
+			h = 2;
+		if cell.find("3")>=0:
+			h = 3;
+		if cell.find("4")>=0:
+			h = 4;
+		if cell.find("5")>=0:
+			h = 5;
+		if cell.find("6")>=0:
+			h = 6;
+		if cell.find("7")>=0:
+			h = 7;
+		if cell.find("8")>=0:
+			h = 8;
+		if cell.find("9")>=0:
+			h = 9;
+		var c;
+		if substance == "water":
+			c = Vector3(0,0,1);
+		elif substance == "stone":
+			c = Vector3(0.6,0.1,0.3);
+		else: # substance == "grass 
+			c = Vector3(0,1,0);
+		makeACube(x,y-yScale,z,c.x,c.y,c.z,2,yScale,2);
+		for n in h:
+			makeACube(x,y-yScale+(n*yScale),z,c.x,c.y,c.z,2,yScale,2);
+		if substance == "water":
+			var e = 6;
+			for n in e:
+				invisibleCube(x,y-yScale+(h*yScale)+(n*yScale),z,2,yScale,2);

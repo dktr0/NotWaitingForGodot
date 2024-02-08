@@ -80,9 +80,8 @@ func _physics_process2(delta):
 	var rightStick = Input.get_vector("right_stick_left","right_stick_right","right_stick_up","right_stick_down");
 	rotate_y(-rightStick.x*0.04); 
 	var p = global_translation;
-	cameraMode2Zoom = clamp(cameraMode2Zoom + (rightStick.y * 0.1),0,1);
-	print(str(cameraMode2Zoom));
-	var cz = cameraMode2Zoom * (30 - 10) + 10;
+	cameraMode2Zoom = clamp(cameraMode2Zoom + (rightStick.y * 0.02),0,1);
+	var cz = cameraMode2Zoom * (110 - 10) + 10;
 	camera.set_global_translation(Vector3(p.x,p.y+cz,p.z));
 	camera.rotation.x = deg2rad(-90);
 #	camera.rotation.x -= rightStick.y * 0.04;
