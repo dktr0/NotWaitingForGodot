@@ -6,7 +6,6 @@ func _ready():
 	loadCSVMap();
 				
 func makeACube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
-	print("makeACube")
 	var sb = StaticBody.new();
 	
 	var boxShape = BoxShape.new();
