@@ -6,7 +6,6 @@ func _ready():
 	loadCSVMap();
 				
 func makeACube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
-	print("makeACube")
 	var sb = StaticBody.new();
 	
 	var boxShape = BoxShape.new();
@@ -23,6 +22,46 @@ func makeACube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	m.mesh = cm;
 	sb.add_child(m);
 	sb.translation = Vector3(x,y,z);
+	add_child(sb);
+	
+func makeADoor(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
+	var sb = StaticBody.new();
+	
+	var boxShape = BoxShape.new();
+	boxShape.extents = Vector3(xSize*0.5,ySize*0.5,zSize*0.5);
+	var owner = sb.create_shape_owner(sb);
+	sb.shape_owner_add_shape(owner, boxShape);
+	
+	var m = MeshInstance.new();
+	var cm = CubeMesh.new();
+	cm.size = Vector3(xSize,ySize,zSize);
+	var sm = SpatialMaterial.new();
+	sm.albedo_color = Color( r, g, b, 1 );
+	cm.material = sm;
+	m.mesh = cm;
+	sb.add_child(m);
+	sb.translation = Vector3(x,y,z);
+	sb.add_to_group("doors");
+	add_child(sb);
+	
+func makeAKey(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
+	var sb = StaticBody.new();
+	
+	var boxShape = BoxShape.new();
+	boxShape.extents = Vector3(xSize*0.5,ySize*0.5,zSize*0.5);
+	var owner = sb.create_shape_owner(sb);
+	sb.shape_owner_add_shape(owner, boxShape);
+	
+	var m = MeshInstance.new();
+	var cm = CubeMesh.new();
+	cm.size = Vector3(xSize,ySize,zSize);
+	var sm = SpatialMaterial.new();
+	sm.albedo_color = Color( r, g, b, 1 );
+	cm.material = sm;
+	m.mesh = cm;
+	sb.add_child(m);
+	sb.translation = Vector3(x,y,z);
+	sb.add_to_group("keys");
 	add_child(sb);
 	
 func invisibleCube(x=0,y=0,z=0,xSize=2,ySize=2,zSize=2):
@@ -225,10 +264,16 @@ func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=
 		var z = zStart + (zInc * cellNo);
 		var substance = "grass";
 		var h = 0;
+		var hasAKey = false;
+		var hasADoor = false;
 		if cell.find("w")>=0:
 			substance = "water";
 		if cell.find("s")>=0:
 			substance = "stone";
+		if cell.find("k")>=0:
+			hasAKey = true;
+		if cell.find("d")>=0:
+			hasADoor = true;
 		if cell.find("1")>=0:
 			h = 1;
 		if cell.find("2")>=0:
@@ -261,3 +306,7 @@ func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=
 			var e = 6;
 			for n in e:
 				invisibleCube(x,y-yScale+(h*yScale)+(n*yScale),z,2,yScale,2);
+		if hasADoor:
+			makeADoor(x,y+(h*yScale),z,0,0,0,2,yScale,2);
+		if hasAKey:
+			makeAKey(x,y+(h*yScale),z,1,0,0,yScale,2);

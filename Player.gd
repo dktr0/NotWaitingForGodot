@@ -14,6 +14,8 @@ var cameraMode = 2; # 1 == first-person, 2 == top-down
 
 var cameraMode2Zoom = 0.5; # 0-1 where 0 is max zoomed in, 1 is max zoomed out
 
+var keys = 0;
+
 func playerStart(x=0,y=0,z=0):
 	print("changing player start " + str(x) + " " + str(y) + " " + str(z));
 	set_global_translation(Vector3(x,y,z));
@@ -95,3 +97,15 @@ func _physics_process2(delta):
 		direction = direction.normalized();
 	velocity = velocity.linear_interpolate(direction * speed, acceleration * delta);
 	velocity = move_and_slide(velocity, Vector3.UP);
+
+
+func _on_Area_body_entered(body):
+	if body.is_in_group("doors"):
+		if keys>0:
+			body.queue_free();
+			keys = keys - 1;
+			print("you have " + str(keys) + " keys");
+	if body.is_in_group("keys"):
+		keys = keys + 1;
+		print("you have " + str(keys) + " keys");
+		body.queue_free();
