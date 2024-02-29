@@ -2,8 +2,18 @@ extends Spatial
 
 func _ready():
 	print("World::_ready()");
-	$"/root/NotWaitingForGodot/Player".playerStart(2,3,-19);
+	reset();
+	
+func reset():
+	print("World::reset()");
+	deleteWorld();
 	loadCSVMap();
+	$"/root/NotWaitingForGodot/Player".playerStart(2,3,-19);
+
+func deleteWorld():
+	for i in range(0, get_child_count()):
+		get_child(i).queue_free()
+
 				
 func makeACube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	var sb = StaticBody.new();
@@ -73,17 +83,12 @@ func invisibleCube(x=0,y=0,z=0,xSize=2,ySize=2,zSize=2):
 	sb.translation = Vector3(x,y,z);
 	add_child(sb);
 	
-func movableCube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2,axisLock=""):
+func movableCube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	var sb = RigidBody.new();
-	if axisLock.find("x")>=0:
-		sb.axis_lock_angular_x = true;
-		sb.axis_lock_linear_x = true;
-	elif axisLock.find("y")>=0:
-		sb.axis_lock_angular_y = true;
-		sb.axis_lock_linear_y = true;		
-	elif axisLock.find("z")>=0:
-		sb.axis_lock_angular_z = true;
-		sb.axis_lock_linear_z = true;
+	sb.axis_lock_angular_x = true;
+	sb.axis_lock_angular_y = true;
+	sb.axis_lock_angular_z = true;
+	sb.axis_lock_linear_y = true;		
 	var boxShape = BoxShape.new();
 	boxShape.extents = Vector3(xSize*0.5,ySize*0.5,zSize*0.5);
 	var owner = sb.create_shape_owner(sb);
@@ -98,6 +103,8 @@ func movableCube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2,axisLock=""):
 	m.mesh = cm;
 	sb.add_child(m);
 	sb.translation = Vector3(x,y,z);
+	sb.set_mass(10000);
+	sb.set_friction(1000000000);
 	add_child(sb);
 	
 func makeASphere(x=0,y=0,z=0,r=1,g=0,b=0):
@@ -266,6 +273,7 @@ func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=
 		var h = 0;
 		var hasAKey = false;
 		var hasADoor = false;
+		var hasAMovableBlock = false;
 		if cell.find("w")>=0:
 			substance = "water";
 		if cell.find("s")>=0:
@@ -274,6 +282,8 @@ func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=
 			hasAKey = true;
 		if cell.find("d")>=0:
 			hasADoor = true;
+		if cell.find("m")>=0:
+			hasAMovableBlock = true;
 		if cell.find("1")>=0:
 			h = 1;
 		if cell.find("2")>=0:
@@ -308,5 +318,7 @@ func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=
 				invisibleCube(x,y-yScale+(h*yScale)+(n*yScale),z,2,yScale,2);
 		if hasADoor:
 			makeADoor(x,y+(h*yScale),z,0,0,0,2,yScale,2);
-		if hasAKey:
+		elif hasAKey:
 			makeAKey(x,y+(h*yScale),z,1,0,0,yScale,2);
+		elif hasAMovableBlock:
+			movableCube(x,y+(h*yScale),z,0,1,1,2,2,2);

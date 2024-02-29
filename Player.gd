@@ -29,6 +29,8 @@ func _input(event):
 		_inputMode1(event);
 	else:
 		_inputMode2(event);
+	if Input.is_action_just_pressed("reset"):
+		$"/root/NotWaitingForGodot/World".reset();
 		
 func _inputMode1(event):
 	if event is InputEventMouseMotion:

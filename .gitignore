@@ -2,3 +2,4 @@
 *.scn
 *.import
 *.material
+.import/
