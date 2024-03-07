@@ -34,6 +34,13 @@ func makeACube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	sb.translation = Vector3(x,y,z);
 	add_child(sb);
 	
+func makeABeam(dir="up",x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
+	var scene = preload("res://Beam.tscn");
+	var beam = scene.instance();
+	beam.beamDirection = dir;
+	beam.translation = Vector3(x,y,z);
+	add_child(beam);
+	
 func makeADoor(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	var sb = StaticBody.new();
 	
@@ -274,15 +281,24 @@ func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=
 		var hasAKey = false;
 		var hasADoor = false;
 		var hasAMovableBlock = false;
+		var beam = null;
 		if cell.find("w")>=0:
 			substance = "water";
 		if cell.find("s")>=0:
 			substance = "stone";
 		if cell.find("k")>=0:
 			hasAKey = true;
-		if cell.find("d")>=0:
+		if cell.find("door")>=0:
 			hasADoor = true;
-		if cell.find("m")>=0:
+		if cell.find("beamup")>=0:
+			beam = "up";
+		if cell.find("beamdown")>=0:
+			beam = "down";
+		if cell.find("beamleft")>=0:
+			beam = "left";
+		if cell.find("beamright")>=0:
+			beam = "right";
+		if cell.find("movable")>=0 || cell.find("moveable")>=0:
 			hasAMovableBlock = true;
 		if cell.find("1")>=0:
 			h = 1;
@@ -322,3 +338,5 @@ func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=
 			makeAKey(x,y+(h*yScale),z,1,0,0,yScale,2);
 		elif hasAMovableBlock:
 			movableCube(x,y+(h*yScale),z,0,1,1,2,2,2);
+		elif beam != null:
+			makeABeam(beam,x,y+(h*yScale),z,0,0,0,2,yScale,2);

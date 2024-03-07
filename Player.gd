@@ -53,7 +53,9 @@ func _physics_process(delta):
 		
 func _physics_process1(delta):
 	if global_translation.y > -20:
-		move_and_slide(fall, Vector3.UP)
+		# move_and_slide(fall, Vector3.UP)
+		# move_and_slide(fall,Vector3.UP,false,4,0.785398,false); 
+		pass
 	if not is_on_floor():
 		fall.y -= gravity
 	if Input.is_action_just_pressed("a_button") and is_on_floor():
@@ -71,8 +73,10 @@ func _physics_process1(delta):
 	if direction.length() > 1:
 		direction = direction.normalized();
 	velocity = velocity.linear_interpolate(direction * speed, acceleration * delta);
-	velocity = move_and_slide(velocity, Vector3.UP);
-
+	# velocity = move_and_slide(velocity, Vector3.UP);
+	# velocity = move_and_slide(velocity,Vector3.UP,false,4,0.785398,false);
+	velocity = move_and_collide (velocity, false);
+	
 func _physics_process2(delta):
 	if global_translation.y > -20:
 		move_and_slide(fall, Vector3.UP)
