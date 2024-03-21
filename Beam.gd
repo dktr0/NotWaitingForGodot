@@ -18,9 +18,11 @@ func _ready():
 func _physics_process(delta):
 	var hit = rayCast.get_collider();
 	if hit != null:
-		if !hit.is_in_group("Beam"):
+		if hit.is_in_group("Player"):
+			print("hit player");
+			$"/root/NotWaitingForGodot/World".reset();
+		elif !hit.is_in_group("Beam") && !hit.is_in_group("Player"):
 			var d = get_translation().distance_to(hit.get_translation());
-			print(str(d));
 			if(beamDirection == "down"):
 				rayMesh.set_scale(Vector3(0.1,0.1,d/2));
 				rayMesh.set_translation(Vector3(0,0,d/2));
@@ -33,4 +35,3 @@ func _physics_process(delta):
 			if(beamDirection == "right"):
 				rayMesh.set_scale(Vector3(d/2,0.1,0.1));
 				rayMesh.set_translation(Vector3(d/2,0,0));
-				

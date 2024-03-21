@@ -90,12 +90,19 @@ func invisibleCube(x=0,y=0,z=0,xSize=2,ySize=2,zSize=2):
 	sb.translation = Vector3(x,y,z);
 	add_child(sb);
 	
-func movableCube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
+func movableCube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2,axis="x"):
 	var sb = RigidBody.new();
 	sb.axis_lock_angular_x = true;
 	sb.axis_lock_angular_y = true;
 	sb.axis_lock_angular_z = true;
-	sb.axis_lock_linear_y = true;		
+	if axis=="xz":
+		sb.axis_lock_linear_y = true;		
+	elif axis=="x":
+		sb.axis_lock_linear_y = true;		
+		sb.axis_lock_linear_z = true;		
+	elif axis=="z":
+		sb.axis_lock_linear_y = true;		
+		sb.axis_lock_linear_x = true;		
 	var boxShape = BoxShape.new();
 	boxShape.extents = Vector3(xSize*0.5,ySize*0.5,zSize*0.5);
 	var owner = sb.create_shape_owner(sb);
@@ -110,8 +117,8 @@ func movableCube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	m.mesh = cm;
 	sb.add_child(m);
 	sb.translation = Vector3(x,y,z);
-	sb.set_mass(10000);
-	sb.set_friction(1000000000);
+	sb.set_mass(1);
+	sb.set_friction(1);
 	add_child(sb);
 	
 func makeASphere(x=0,y=0,z=0,r=1,g=0,b=0):
@@ -256,7 +263,7 @@ func loadMaze(path="res://map.txt"):
 	var lines = map.split("\n");
 	print(str(lines));
 	for lineNo in lines.size():
-		print("line " + str(lineNo) + ": " + lines[lineNo]);
+		# print("line " + str(lineNo) + ": " + lines[lineNo]);
 		cubeRow(lines[lineNo],0,0,-20+(lineNo*2),2,0,1,0,0,5);
 		
 func loadCSVMap(path="res://map.txt"):
@@ -266,7 +273,7 @@ func loadCSVMap(path="res://map.txt"):
 	var map = file.get_as_text();
 	var rows = map.split("\n");
 	for rowNo in rows.size():
-		print("row " + str(rowNo) + ": " + rows[rowNo]);
+		# print("row " + str(rowNo) + ": " + rows[rowNo]);
 		csvMapRow(rows[rowNo],0,0,-20+(rowNo*2),2,0,0,1,0,0,2.5);
 		
 func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=1,yScale=5):
@@ -280,7 +287,7 @@ func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=
 		var h = 0;
 		var hasAKey = false;
 		var hasADoor = false;
-		var hasAMovableBlock = false;
+		var movableBlock = null;
 		var beam = null;
 		if cell.find("w")>=0:
 			substance = "water";
@@ -298,8 +305,12 @@ func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=
 			beam = "left";
 		if cell.find("beamright")>=0:
 			beam = "right";
-		if cell.find("movable")>=0 || cell.find("moveable")>=0:
-			hasAMovableBlock = true;
+		if cell.find("movablex")>=0 || cell.find("moveablex")>=0:
+			movableBlock = "x";
+		elif cell.find("movablez")>=0 || cell.find("moveablez")>=0:
+			movableBlock = "z";
+		elif cell.find("movable")>=0 || cell.find("moveable")>=0:
+			movableBlock = "xz";
 		if cell.find("1")>=0:
 			h = 1;
 		if cell.find("2")>=0:
@@ -336,7 +347,7 @@ func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=
 			makeADoor(x,y+(h*yScale),z,0,0,0,2,yScale,2);
 		elif hasAKey:
 			makeAKey(x,y+(h*yScale),z,1,0,0,yScale,2);
-		elif hasAMovableBlock:
-			movableCube(x,y+(h*yScale),z,0,1,1,2,2,2);
+		elif movableBlock != null:
+			movableCube(x,y+(h*yScale),z,0,1,1,2,2,2,movableBlock);
 		elif beam != null:
 			makeABeam(beam,x,y+(h*yScale),z,0,0,0,2,yScale,2);
