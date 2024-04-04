@@ -119,6 +119,8 @@ func movableCube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2,axis="x"):
 	sb.translation = Vector3(x,y,z);
 	sb.set_mass(1);
 	sb.set_friction(1);
+	sb.set_bounce(0);
+	sb.set_linear_damp(5);
 	add_child(sb);
 	
 func makeASphere(x=0,y=0,z=0,r=1,g=0,b=0):
@@ -336,9 +338,11 @@ func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=
 			c = Vector3(0.6,0.1,0.3);
 		else: # substance == "grass 
 			c = Vector3(0,1,0);
-		makeACube(x,y-yScale,z,c.x,c.y,c.z,2,yScale,2);
-		for n in h:
-			makeACube(x,y-yScale+(n*yScale),z,c.x,c.y,c.z,2,yScale,2);
+		# makeACube(x,y-yScale,z,c.x,c.y,c.z,2,yScale,2);
+		var h2 = h + 1;
+		makeACube(x,y-yScale+(h*yScale*0.5),z,c.x,c.y,c.z,2,yScale*h2,2);
+		#for n in h:
+		#	makeACube(x,y-yScale+(n*yScale),z,c.x,c.y,c.z,2,yScale,2);
 		if substance == "water":
 			var e = 6;
 			for n in e:
