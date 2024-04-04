@@ -35,6 +35,7 @@ func _physics_process(delta):
 		if hit.is_in_group("Player"):
 			print("hit player");
 			$"/root/NotWaitingForGodot/World".reset();
-		elif !hit.is_in_group("Beam") && !hit.is_in_group("Player"):
+		elif !hit.is_in_group("Player"):
+		# elif !hit.is_in_group("Beam") && !hit.is_in_group("Player"):
 			var d = get_translation().distance_to(hit.get_translation());
 			scaleAndCast(d);
