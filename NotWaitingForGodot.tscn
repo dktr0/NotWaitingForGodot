@@ -313,4 +313,7 @@ anims/walk = SubResource( 6 )
 [node name="World" type="Spatial" parent="."]
 script = ExtResource( 3 )
 
+[node name="HTTPRequest" type="HTTPRequest" parent="World"]
+
 [connection signal="body_entered" from="Player/Area" to="Player" method="_on_Area_body_entered"]
+[connection signal="request_completed" from="World/HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]

@@ -2,7 +2,23 @@ extends Spatial
 
 func _ready():
 	print("World::_ready()");
-	reset();
+	doHTTPRequest();
+#	reset();
+	
+func doHTTPRequest():
+	print("doHTTPRequest");
+	$HTTPRequest.connect("request_completed", self, "_on_request_completed");
+	var url = "https://docs.google.com/spreadsheets/d/14qT2o_0n8Im94eKiRVjA4K4qozhorJw0Z95SlzhMxaM/gviz/tq?gid=400419988&tqx=out:csv";
+	var error = $HTTPRequest.request(url);
+	if error != OK:
+	  push_error("An error occurred in the HTTP request.")
+	else:
+	  print("request appears to have been initiated successfully... but who knows?")
+	
+func _on_request_completed(result, response_code, headers, body):
+	print("_on_request_completed");
+	var map = body.get_string_from_utf8();
+	loadCSVMapString(map);
 	
 func reset():
 	print("World::reset()");
@@ -273,11 +289,14 @@ func loadCSVMap(path="res://map.txt"):
 	var file = File.new();
 	file.open(path, File.READ);
 	var map = file.get_as_text();
+	loadCSVMapString(map);
+	
+func loadCSVMapString(map=""):
 	var rows = map.split("\n");
 	for rowNo in rows.size():
 		# print("row " + str(rowNo) + ": " + rows[rowNo]);
 		csvMapRow(rows[rowNo],0,0,-20+(rowNo*2),2,0,0,1,0,0,2.5);
-		
+
 func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=1,yScale=5):
 	var cells = row.split(",");
 	for cellNo in cells.size():
