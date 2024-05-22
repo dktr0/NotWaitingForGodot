@@ -1,14 +1,34 @@
 extends Spatial
 
+var configurationURL = "https://docs.google.com/spreadsheets/d/14qT2o_0n8Im94eKiRVjA4K4qozhorJw0Z95SlzhMxaM/gviz/tq?gid=1674844352&tqx=out:csv";
+var configuration = {};
+
 func _ready():
 	print("World::_ready()");
-	doHTTPRequest();
-#	reset();
+	getConfiguration();
+
+func getConfiguration():
+	$HTTPRequest.connect("request_completed", self, "_receivedConfiguration");
+	var error = $HTTPRequest.request(configurationURL);
+	if error != OK:
+	  push_error("An error occurred in the HTTP request for the configuration");
+
+func _receivedConfiguration(result, response_code, headers, body):
+	print("received configuration");
+	var txt = body.get_string_from_utf8();
+	var rows = txt.split("\n");
+	configuration["anotherTest"] = 13;
+	for rowNo in rows.size():
+		var cols = rows[rowNo].split(",");
+		var key = cols[0].substr(1,cols[0].length()-2);	
+		var value = cols[1].substr(1,cols[1].length()-2);
+		configuration[key] = value;
+	print(str(configuration));
+	doHTTPRequest(configuration["WorldURL"]);
 	
-func doHTTPRequest():
+func doHTTPRequest(url):
 	print("doHTTPRequest");
 	$HTTPRequest.connect("request_completed", self, "_on_request_completed");
-	var url = "https://docs.google.com/spreadsheets/d/14qT2o_0n8Im94eKiRVjA4K4qozhorJw0Z95SlzhMxaM/gviz/tq?gid=400419988&tqx=out:csv";
 	var error = $HTTPRequest.request(url);
 	if error != OK:
 	  push_error("An error occurred in the HTTP request.")
