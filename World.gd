@@ -3,6 +3,11 @@ extends Spatial
 var configurationDoc = "14qT2o_0n8Im94eKiRVjA4K4qozhorJw0Z95SlzhMxaM";
 var configurationSheet = "1674844352";
 var configuration = {};
+var playerStartX;
+var playerStartY;
+var playerStartZ;
+onready var worldRequest = $"../WorldRequest";
+onready var configurationRequest = $"../ConfigurationRequest";
 
 func googleDocCSV(docID,sheetID):
 	return "https://docs.google.com/spreadsheets/d/" + docID + "/gviz/tq?gid=" + sheetID + "&tqx=out:csv";
@@ -12,8 +17,8 @@ func _ready():
 	getConfiguration();
 
 func getConfiguration():
-	$ConfigurationRequest.connect("request_completed", self, "_receivedConfiguration");
-	var error = $ConfigurationRequest.request(googleDocCSV(configurationDoc,configurationSheet));
+	configurationRequest.connect("request_completed", self, "_receivedConfiguration");
+	var error = configurationRequest.request(googleDocCSV(configurationDoc,configurationSheet));
 	if error != OK:
 	  push_error("An error occurred in the HTTP request for the configuration");
 
@@ -27,11 +32,18 @@ func _receivedConfiguration(result, response_code, headers, body):
 		var value = cols[1].substr(1,cols[1].length()-2);
 		configuration[key] = value;
 	print(str(configuration));
+	playerStartX = float(configuration["PlayerStartX"]);
+	playerStartY = float(configuration["PlayerStartY"]);
+	playerStartZ = float(configuration["PlayerStartZ"]);
+	# deleteWorld();
 	getWorld(googleDocCSV(configurationDoc,configuration["WorldSheet"]));
 	
+func playerToStartPosition():
+	$"/root/NotWaitingForGodot/Player".playerStart(playerStartX,playerStartY,playerStartZ);
+
 func getWorld(url):
-	$WorldRequest.connect("request_completed", self, "_receivedWorld");
-	var error = $WorldRequest.request(url);
+	worldRequest.connect("request_completed", self, "_receivedWorld");
+	var error = worldRequest.request(url);
 	if error != OK:
 	  push_error("An error occurred in the HTTP request.")
 	
@@ -39,18 +51,17 @@ func _receivedWorld(result, response_code, headers, body):
 	print("received world");
 	var map = body.get_string_from_utf8();
 	loadCSVMapString(map);
+	playerToStartPosition();
 	
 func reset():
 	print("World::reset()");
 	deleteWorld();
-	loadCSVMap();
-	$"/root/NotWaitingForGodot/Player".playerStart(2,3,-19);
+	getConfiguration();
 
 func deleteWorld():
 	for i in range(0, get_child_count()):
 		get_child(i).queue_free()
 
-				
 func makeACube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	var sb = StaticBody.new();
 	
