@@ -8,6 +8,7 @@ var playerStartY;
 var playerStartZ;
 onready var worldRequest = $"../WorldRequest";
 onready var configurationRequest = $"../ConfigurationRequest";
+var yScale = 2.5;
 
 func googleDocCSV(docID,sheetID):
 	return "https://docs.google.com/spreadsheets/d/" + docID + "/gviz/tq?gid=" + sheetID + "&tqx=out:csv";
@@ -15,7 +16,7 @@ func googleDocCSV(docID,sheetID):
 func _ready():
 	print("World::_ready()");
 	getConfiguration();
-
+	
 func getConfiguration():
 	configurationRequest.connect("request_completed", self, "_receivedConfiguration");
 	var error = configurationRequest.request(googleDocCSV(configurationDoc,configurationSheet));
@@ -50,7 +51,7 @@ func getWorld(url):
 func _receivedWorld(result, response_code, headers, body):
 	print("received world");
 	var map = body.get_string_from_utf8();
-	loadCSVMapString(map);
+	loadCSVMap(map);
 	playerToStartPosition();
 	
 func reset():
@@ -315,14 +316,14 @@ func loadMaze(path="res://map.txt"):
 		# print("line " + str(lineNo) + ": " + lines[lineNo]);
 		cubeRow(lines[lineNo],0,0,-20+(lineNo*2),2,0,1,0,0,5);
 		
-func loadCSVMap(path="res://map.txt"):
+func loadCSVMapFile(path="res://map.txt"):
 	print("loading CSV map called " + path);
 	var file = File.new();
 	file.open(path, File.READ);
 	var map = file.get_as_text();
-	loadCSVMapString(map);
+	loadCSVMap(map);
 	
-func loadCSVMapString(map=""):
+func loadCSVMap(map=""):
 	var rows = map.split("\n");
 	for rowNo in rows.size():
 		# print("row " + str(rowNo) + ": " + rows[rowNo]);
@@ -331,77 +332,83 @@ func loadCSVMapString(map=""):
 func csvMapRow(row="",xStart=0,yStart=0,zStart=0,xInc=0,yInc=0,zInc=0,r=1,g=1,b=1,yScale=5):
 	var cells = row.split(",");
 	for cellNo in cells.size():
-		var cell = cells[cellNo].to_lower();
 		var x = xStart + (xInc * cellNo);
 		var y = yStart + (yInc * cellNo);
 		var z = zStart + (zInc * cellNo);
-		var substance = "grass";
-		var h = 0;
-		var hasAKey = false;
-		var hasADoor = false;
-		var movableBlock = null;
-		var beam = null;
-		if cell.find("w")>=0:
-			substance = "water";
-		if cell.find("s")>=0:
-			substance = "stone";
-		if cell.find("k")>=0:
-			hasAKey = true;
-		if cell.find("door")>=0:
-			hasADoor = true;
-		if cell.find("beamup")>=0:
-			beam = "up";
-		if cell.find("beamdown")>=0:
-			beam = "down";
-		if cell.find("beamleft")>=0:
-			beam = "left";
-		if cell.find("beamright")>=0:
-			beam = "right";
-		if cell.find("movablex")>=0 || cell.find("moveablex")>=0:
-			movableBlock = "x";
-		elif cell.find("movablez")>=0 || cell.find("moveablez")>=0:
-			movableBlock = "z";
-		elif cell.find("movable")>=0 || cell.find("moveable")>=0:
-			movableBlock = "xz";
-		if cell.find("1")>=0:
-			h = 1;
-		if cell.find("2")>=0:
-			h = 2;
-		if cell.find("3")>=0:
-			h = 3;
-		if cell.find("4")>=0:
-			h = 4;
-		if cell.find("5")>=0:
-			h = 5;
-		if cell.find("6")>=0:
-			h = 6;
-		if cell.find("7")>=0:
-			h = 7;
-		if cell.find("8")>=0:
-			h = 8;
-		if cell.find("9")>=0:
-			h = 9;
-		var c;
-		if substance == "water":
-			c = Vector3(0,0,1);
-		elif substance == "stone":
-			c = Vector3(0.6,0.1,0.3);
-		else: # substance == "grass 
-			c = Vector3(0,1,0);
-		# makeACube(x,y-yScale,z,c.x,c.y,c.z,2,yScale,2);
-		var h2 = h + 1;
-		makeACube(x,y-yScale+(h*yScale*0.5),z,c.x,c.y,c.z,2,yScale*h2,2);
-		#for n in h:
-		#	makeACube(x,y-yScale+(n*yScale),z,c.x,c.y,c.z,2,yScale,2);
-		if substance == "water":
-			var e = 6;
-			for n in e:
-				invisibleCube(x,y-yScale+(h*yScale)+(n*yScale),z,2,yScale,2);
-		if hasADoor:
-			makeADoor(x,y+(h*yScale),z,0,0,0,2,yScale,2);
-		elif hasAKey:
-			makeAKey(x,y+(h*yScale),z,1,0,0,yScale,2);
-		elif movableBlock != null:
-			movableCube(x,y+(h*yScale),z,0,1,1,2,2,2,movableBlock);
-		elif beam != null:
-			makeABeam(beam,x,y+(h*yScale),z,0,0,0,2,yScale,2);
+		csvMapCell(x,y,z,cells[cellNo]);
+		
+func csvMapCell(x,y,z,cell=""):
+	cell = cell.to_lower();
+	cell = cell.substr(1,cell.length()-2);	# remove quotation marks at beginning and end of cell
+	var aspects = { "substance": "grass", "h": 0 };
+	var codes = cell.split(" ",false);
+	for codeNo in codes.size():
+		parseCode(codes[codeNo],aspects);
+	realizeAspects(x,y,z,aspects);
+		
+func parseCode(code,aspects):
+	if code == "1":
+		aspects["h"] = 1;
+	elif code == "2":
+		aspects["h"] = 2;
+	elif code == "3":
+		aspects["h"] = 3;
+	elif code == "4":
+		aspects["h"] = 4;
+	elif code == "5":
+		aspects["h"] = 5;
+	elif code == "6":
+		aspects["h"] = 6;
+	elif code == "7":
+		aspects["h"] = 7;
+	elif code == "8":
+		aspects["h"] = 8;
+	elif code == "9":
+		aspects["h"] = 9;
+	elif code == "w":
+		aspects["substance"] = "water";
+	elif code == "s":
+		aspects["substance"] = "stone";
+	elif code == "g":
+		aspects["substance"] = "grass";
+	elif code == "key":
+		aspects["key"] = true;
+	elif code == "door":
+		aspects["door"] = true;
+	elif (code == "movable" || code == "moveable"):
+		aspects["movableBlock"] = "xz";
+	elif (code == "movablex" || code == "moveablex"):
+		aspects["movableBlock"] = "x";
+	elif (code == "movablez" || code == "moveablez"):
+		aspects["movableBlock"] = "z";
+	elif code == "beamup":
+		aspects["beam"] = "up";
+	elif code == "beamdown":
+		aspects["beam"] = "down";
+	elif code == "beamleft":
+		aspects["beam"] = "left";
+	elif code == "beamright":
+		aspects["beam"] = "right";
+		
+func realizeAspects(x,y,z,aspects={}):
+	var c;
+	var h = aspects["h"];
+	if aspects["substance"] == "water":
+		c = Vector3(0,0,1);
+	elif aspects["substance"] == "stone":
+		c = Vector3(0.6,0.1,0.3);
+	else: # substance == "grass 
+		c = Vector3(0,1,0);
+	makeACube(x,y-yScale+(h*yScale*0.5),z,c.x,c.y,c.z,2,h*yScale+1,2);
+	if aspects["substance"] == "water":
+		var e = 6;
+		for n in e:
+			invisibleCube(x,y-yScale+(h*yScale)+(n*yScale),z,2,yScale,2);
+	if aspects.has("door"):
+		makeADoor(x,y+(h*yScale),z,0,0,0,2,yScale,2);
+	if aspects.has("key"):
+		makeAKey(x,y+(h*yScale),z,1,0,0,yScale,2);
+	if aspects.has("movableBlock"):
+		movableCube(x,y+(h*yScale),z,0,1,1,2,2,2,aspects["movableBlock"]);
+	elif aspects.has("beam"):
+		makeABeam(aspects["beam"],x,y+(h*yScale),z,0,0,0,2,yScale,2);
