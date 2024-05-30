@@ -63,14 +63,12 @@ func deleteWorld():
 	for i in range(0, get_child_count()):
 		get_child(i).queue_free()
 
-func makeACube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
+func makeACube(aspects,x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	var sb = StaticBody.new();
-	
 	var boxShape = BoxShape.new();
 	boxShape.extents = Vector3(xSize*0.5,ySize*0.5,zSize*0.5);
 	var owner = sb.create_shape_owner(sb);
 	sb.shape_owner_add_shape(owner, boxShape);
-	
 	var m = MeshInstance.new();
 	var cm = CubeMesh.new();
 	cm.size = Vector3(xSize,ySize,zSize);
@@ -80,13 +78,17 @@ func makeACube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	m.mesh = cm;
 	sb.add_child(m);
 	sb.translation = Vector3(x,y,z);
+	realizeClass(aspects,sb);	
+	realizeCollision(aspects,sb);
 	add_child(sb);
 	
-func makeABeam(dir="up",x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
+func makeABeam(aspects,x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2,on=true):	
 	var scene = preload("res://Beam.tscn");
 	var beam = scene.instance();
-	beam.beamDirection = dir;
+	beam.aspects = aspects;
 	beam.translation = Vector3(x,y,z);
+	realizeClass(aspects,beam);
+	realizeCollision(aspects,beam);
 	add_child(beam);
 	
 func makeADoor(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
@@ -389,6 +391,13 @@ func parseCode(code,aspects):
 		aspects["beam"] = "left";
 	elif code == "beamright":
 		aspects["beam"] = "right";
+	elif code == "off":
+		aspects["on"] = false;
+	elif code == "on":
+		aspects["on"] = true;
+	else:
+		parseClass(code,aspects)
+		parseCollision(code,aspects);
 		
 func realizeAspects(x,y,z,aspects={}):
 	var c;
@@ -399,7 +408,7 @@ func realizeAspects(x,y,z,aspects={}):
 		c = Vector3(0.6,0.1,0.3);
 	else: # substance == "grass 
 		c = Vector3(0,1,0);
-	makeACube(x,y-yScale+(h*yScale*0.5),z,c.x,c.y,c.z,2,h*yScale+1,2);
+	makeACube(aspects,x,y-yScale+(h*yScale*0.5),z,c.x,c.y,c.z,2,h*yScale+1,2);
 	if aspects["substance"] == "water":
 		var e = 6;
 		for n in e:
@@ -411,4 +420,56 @@ func realizeAspects(x,y,z,aspects={}):
 	if aspects.has("movableBlock"):
 		movableCube(x,y+(h*yScale),z,0,1,1,2,2,2,aspects["movableBlock"]);
 	elif aspects.has("beam"):
-		makeABeam(aspects["beam"],x,y+(h*yScale),z,0,0,0,2,yScale,2);
+		makeABeam(aspects,x,y+(h*yScale),z,0,0,0,2,yScale,2);
+
+func parseFunction(funcName,code):
+	# if code begins with funcName and an open bracket...
+	if code.substr(0,funcName.length()+1) == (funcName + "("):
+		code = code.trim_prefix(funcName+"(");
+		# ... remove one closing bracket...
+		code = code.trim_suffix(")");
+		# ... and return the rest!
+		return code;
+	else:
+		return null;
+
+func parseCollision(code,aspects):
+	var a = parseFunction("collision",code);
+	if a != null:
+		var b = parseFunction("on",a);
+		if b != null:
+			print("parsed collision(on = " + b);
+			aspects["collisionOn"] = b;
+			return;
+		b = parseFunction("off",a);
+		if b != null:
+			print("parsed collision(off = " + b);
+			aspects["collisionOff"] = b;
+			
+func parseClass(code,aspects):
+	var a = parseFunction("class",code);
+	if a != null:
+		print("parsed class = " + a);
+		aspects["class"] = a;
+
+func realizeClass(aspects,sb):
+	var _class = aspects.get("class",null);
+	if _class != null:
+		sb.add_to_group(_class);
+		print("adding object to group " + _class);
+
+func realizeCollision(aspects,sb):
+	var collisionOn = aspects.get("collisionOn",null);
+	var collisionOff = aspects.get("collisionOff",null);
+	if collisionOn != null:
+		sb.add_to_group("collisionOn_" + collisionOn);
+	if collisionOff != null:
+		sb.add_to_group("collisionOff_" + collisionOff);
+	
+func collisionOn(groupToTurnOn):
+	print("collisionOn triggered! " + groupToTurnOn);
+	# todo: find all objects of specified group and call on()
+	
+func collisionOff(groupToTurnOff):
+	print("collisionOff triggered! " + groupToTurnOff);
+	# todo: find all objects of specified group and call off()

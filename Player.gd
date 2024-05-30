@@ -9,6 +9,7 @@ var jump = 18;
 var mouse_sensitivity = 0.05;
 
 onready var camera = $"/root/NotWaitingForGodot/Player/Camera";
+onready var world = $"/root/NotWaitingForGodot/World";
 
 var cameraMode = 2; # 1 == first-person, 2 == top-down
 
@@ -117,3 +118,31 @@ func _on_Area_body_entered(body):
 		keys = keys + 1;
 		print("you have " + str(keys) + " keys");
 		body.queue_free();
+	if body.is_in_group("collisionOn_laser1"):
+		world.collisionOn("laser1");
+	if body.is_in_group("collisionOff_laser1"):
+		world.collisionOff("laser1");
+	if body.is_in_group("collisionOn_laser2"):
+		world.collisionOn("laser2");
+	if body.is_in_group("collisionOff_laser2"):
+		world.collisionOff("laser2");
+	if body.is_in_group("collisionOn_laser3"):
+		world.collisionOn("laser3");
+	if body.is_in_group("collisionOff_laser3"):
+		world.collisionOff("laser3");
+	if body.is_in_group("collisionOn_laser4"):
+		world.collisionOn("laser4");
+	if body.is_in_group("collisionOff_laser4"):
+		world.collisionOff("laser4");
+	if body.is_in_group("collisionOn_laser5"):
+		world.collisionOn("laser5");
+	if body.is_in_group("collisionOff_laser5"):
+		world.collisionOff("laser5");
+	if body.is_in_group("collisionOn_laser6"):
+		world.collisionOn("laser6");
+	if body.is_in_group("collisionOff_laser6"):
+		world.collisionOff("laser6");
+	if body.is_in_group("collisionOn_laser7"):
+		world.collisionOn("laser7");
+	if body.is_in_group("collisionOff_laser7"):
+		world.collisionOff("laser7");

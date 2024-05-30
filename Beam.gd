@@ -4,10 +4,32 @@ onready var rayCast = $RayCast;
 onready var rayMesh = $RayMesh;
 
 var beamDirection = null;
+var on = true;
+var _class = null;
+var aspects = {};
 
-func _ready():
+func parseAspects():
+	on = aspects.get("on",on);
+	_class = aspects.get("class",_class);
+	beamDirection = aspects.get("beam","down");
+	
+func on():
+	on = true;
 	scaleAndCast();
-		
+	
+func off():
+	on = false;
+	rayCast.cast_to = Vector3(0,0,0);
+	rayMesh.set_scale(Vector3(0,0,0));
+	rayMesh.set_translation(Vector3(0,0,0));
+	
+func _ready():
+	parseAspects();
+	if on:
+		on();
+	else:
+		off();
+	
 func scaleAndCast(d=50):
 	if beamDirection == "down":
 		rayCast.cast_to = Vector3(0,0,50);
@@ -30,12 +52,13 @@ func scaleAndCast(d=50):
 		queue_free();
 
 func _physics_process(delta):
-	var hit = rayCast.get_collider();
-	if hit != null:
-		if hit.is_in_group("Player"):
-			print("hit player");
-			$"/root/NotWaitingForGodot/World".reset();
-		elif !hit.is_in_group("Player"):
-		# elif !hit.is_in_group("Beam") && !hit.is_in_group("Player"):
-			var d = get_translation().distance_to(hit.get_translation());
-			scaleAndCast(d);
+	if on:
+		var hit = rayCast.get_collider();
+		if hit != null:
+			if hit.is_in_group("Player"):
+				print("hit player");
+				$"/root/NotWaitingForGodot/World".reset();
+			elif !hit.is_in_group("Player"):
+			# elif !hit.is_in_group("Beam") && !hit.is_in_group("Player"):
+				var d = get_translation().distance_to(hit.get_translation());
+				scaleAndCast(d);
