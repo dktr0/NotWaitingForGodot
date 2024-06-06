@@ -326,18 +326,11 @@ func realizeAspects(aspects={}):
 	var y = aspects["y"];
 	var z = aspects["z"];
 	if aspects["substance"] == "water":
-		# c = Vector3(0,0,1);
 		makeWater(aspects);
 	elif aspects["substance"] == "stone":
-		# c = Vector3(0.6,0.1,0.3);
 		makeStone(aspects);
 	else: # substance == "grass 
-		# c = Vector3(0,1,0);
 		makeGrass(aspects);
-	#if aspects["substance"] == "water":
-	#	var e = 6;
-	#	for n in e:
-	#		invisibleCube(x,y-yScale+(h*yScale)+(n*yScale),z,2,yScale,2);
 	if aspects.has("door"):
 		makeADoor(x,y+(h*yScale),z,0,0,0,2,yScale,2);
 	if aspects.has("key"):
