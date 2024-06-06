@@ -10,6 +10,10 @@ onready var worldRequest = $"../WorldRequest";
 onready var configurationRequest = $"../ConfigurationRequest";
 var yScale = 2.5;
 
+func _physics_process(_delta):
+	if Input.is_action_just_pressed("fullscreen"):
+		OS.set_window_fullscreen(!OS.window_fullscreen);
+
 func googleDocCSV(docID,sheetID):
 	return "https://docs.google.com/spreadsheets/d/" + docID + "/gviz/tq?gid=" + sheetID + "&tqx=out:csv";
 	
