@@ -1,0 +1,4 @@
+res://default_env.tres
+res://NotWaitingForGodot.tscn
+res://Player.tscn
+res://World.gd
