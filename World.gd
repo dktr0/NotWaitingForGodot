@@ -170,19 +170,12 @@ func makeADoor(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	
 func makeAKey(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	var sb = StaticBody.new();
-	
 	var boxShape = BoxShape.new();
 	boxShape.extents = Vector3(xSize*0.5,ySize*0.5,zSize*0.5);
 	var owner = sb.create_shape_owner(sb);
 	sb.shape_owner_add_shape(owner, boxShape);
-	
-	var m = MeshInstance.new();
-	var cm = CubeMesh.new();
-	cm.size = Vector3(xSize,ySize,zSize);
-	var sm = SpatialMaterial.new();
-	sm.albedo_color = Color( r, g, b, 1 );
-	cm.material = sm;
-	m.mesh = cm;
+	var key = preload("res://models/Key.tscn");
+	var m = key.instance();
 	sb.add_child(m);
 	sb.translation = Vector3(x,y,z);
 	sb.add_to_group("keys");
