@@ -1,16 +1,16 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1717702051
+::res://::1717703910
 Beam.gd::GDScript::-1::1717695384::0::1::::<>StaticBody3D<>::
 Beam.tscn::PackedScene::-1::1717694485::0::1::::<><>::res://Beam.gd
-default_env.tres::Environment::4579699239884769922::1717701271::0::1::::<><>::
+default_env.tres::Environment::4579699239884769922::1717703811::0::1::::<><>::
 icon.png::CompressedTexture2D::2850842471980092619::1706913054::1717694501::1::::<><>::
 map.txt::TextFile::-1::1716319951::0::1::::<><>::
-NotWaitingForGodot.tscn::PackedScene::5283363888273172089::1717701271::0::1::::<><>::uid://dnskx06n1r45o::::res://Player.tscn<>res://World.gd
-Player.gd::GDScript::-1::1717695266::0::1::::<>CharacterBody3D<>::
-Player.tscn::PackedScene::8109525422733075846::1717701271::0::1::::<><>::res://Player.gd<>res://models/RobotExterior.material<>uid://dtqokilajek4t::::res://models/Crab.glb
-World.gd::GDScript::-1::1717701164::0::1::::<>Node3D<>::
-::res://models/::1717695502
-Crab.glb::PackedScene::8526748457296500869::1717693761::1717694504::1::::<><>::
+NotWaitingForGodot.tscn::PackedScene::5283363888273172089::1717703771::0::1::::<><>::uid://dnskx06n1r45o::::res://Player.tscn<>res://World.gd
+Player.gd::GDScript::-1::1717703769::0::1::::<>CharacterBody3D<>::
+Player.tscn::PackedScene::8109525422733075846::1717703811::0::1::::<><>::res://Player.gd<>uid://dtqokilajek4t::::res://models/Crab.glb
+World.gd::GDScript::-1::1717702649::0::1::::<>Node3D<>::
+::res://models/::1717703696
+Crab.glb::PackedScene::8526748457296500869::1717693761::1717703696::1::::<><>::
 door rock.material::StandardMaterial3D::-1::1717693789::0::1::::<><>::
 Key.glb::PackedScene::7209997270042969908::1717693761::1717694506::1::::<><>::
 Key.tscn::PackedScene::8425739211472910676::1717695502::0::1::::<><>::res://models/Material.material<>res://models/Material_001.material

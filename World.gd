@@ -13,7 +13,7 @@ var frameCount = 0;
 
 func _physics_process(_delta):
 	frameCount = frameCount + 1;
-	print(str(frameCount));
+	#print(str(frameCount));
 	if Input.is_action_just_pressed("fullscreen"):
 		get_window().mode = Window.MODE_EXCLUSIVE_FULLSCREEN if (!((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN))) else Window.MODE_WINDOWED;
 
@@ -21,9 +21,8 @@ func googleDocCSV(docID,sheetID):
 	return "https://docs.google.com/spreadsheets/d/" + docID + "/gviz/tq?gid=" + sheetID + "&tqx=out:csv";
 	
 func _ready():
-	pass
-	# print("World::_ready()");
-	# getConfiguration();
+	print("World::_ready()");
+	getConfiguration();
 	
 func getConfiguration():
 	configurationRequest.connect("request_completed", Callable(self, "_receivedConfiguration"));
@@ -48,7 +47,8 @@ func _receivedConfiguration(_result, _response_code, _headers, body):
 	getWorld(googleDocCSV(configurationDoc,configuration["WorldSheet"]));
 	
 func playerToStartPosition():
-	$"/root/NotWaitingForGodot/Player".playerStart(playerStartX,playerStartY,playerStartZ);
+	pass
+	#$"/root/NotWaitingForGodot/Player".playerStart(playerStartX,playerStartY,playerStartZ);
 
 func getWorld(url):
 	worldRequest.connect("request_completed", Callable(self, "_receivedWorld"));
@@ -330,10 +330,8 @@ func realizeAspects(aspects={}):
 	var y = aspects["y"];
 	var z = aspects["z"];
 	if aspects["substance"] == "water":
-		return;
 		makeWater(aspects);
 	elif aspects["substance"] == "stone":
-		return;
 		makeStone(aspects);
 	else: # substance == "grass 
 		makeGrass(aspects);
