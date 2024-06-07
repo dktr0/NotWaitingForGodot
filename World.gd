@@ -27,8 +27,12 @@ func getConfiguration():
 	if error != OK:
 		push_error("An error occurred in the HTTP request for the configuration");
 
-func _receivedConfiguration(_result, _response_code, _headers, body):
+func _receivedConfiguration(result, response_code, headers, body):
 	print("received configuration");
+	
+	if result != HTTPRequest.RESULT_SUCCESS:
+		printerr("error receiving configuration: " + str(result) + " " + str(response_code)+ " " + str(headers) + " " + str(body));
+		return
 	var txt = body.get_string_from_utf8();
 	print(txt);
 	var rows = txt.split("\n");
