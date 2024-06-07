@@ -1,14 +1,15 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1717703910
+::res://::1717786092
 Beam.gd::GDScript::-1::1717695384::0::1::::<>StaticBody3D<>::
 Beam.tscn::PackedScene::-1::1717694485::0::1::::<><>::res://Beam.gd
-default_env.tres::Environment::4579699239884769922::1717703811::0::1::::<><>::
+default_env.tres::Environment::4579699239884769922::1717785525::0::1::::<><>::
+export_presets.cfg::TextFile::-1::1717785561::0::1::::<><>::
 icon.png::CompressedTexture2D::2850842471980092619::1706913054::1717694501::1::::<><>::
 map.txt::TextFile::-1::1716319951::0::1::::<><>::
-NotWaitingForGodot.tscn::PackedScene::5283363888273172089::1717703771::0::1::::<><>::uid://dnskx06n1r45o::::res://Player.tscn<>res://World.gd
+NotWaitingForGodot.tscn::PackedScene::5283363888273172089::1717785525::0::1::::<><>::uid://dnskx06n1r45o::::res://Player.tscn<>res://World.gd
 Player.gd::GDScript::-1::1717703769::0::1::::<>CharacterBody3D<>::
 Player.tscn::PackedScene::8109525422733075846::1717703811::0::1::::<><>::res://Player.gd<>uid://dtqokilajek4t::::res://models/Crab.glb
-World.gd::GDScript::-1::1717702649::0::1::::<>Node3D<>::
+World.gd::GDScript::-1::1717782200::0::1::::<>Node3D<>::
 ::res://models/::1717703696
 Crab.glb::PackedScene::8526748457296500869::1717693761::1717703696::1::::<><>::
 door rock.material::StandardMaterial3D::-1::1717693789::0::1::::<><>::
@@ -47,3 +48,10 @@ buttonpush.wav::AudioStreamWAV::3320251222552908952::1717693761::1717694501::1::
 laser.wav::AudioStreamWAV::5017235882879263631::1717693761::1717694501::1::::<><>::
 pickup.wav::AudioStreamWAV::4023746890819197913::1717693761::1717694501::1::::<><>::
 win.wav::AudioStreamWAV::6496536808769976774::1717693761::1717694501::1::::<><>::
+::res://web/::1717786115
+index.apple-touch-icon.png::CompressedTexture2D::8760527335112079641::1717786115::1717786115::1::::<><>::
+index.icon.png::CompressedTexture2D::6185478961628835813::1717786115::1717786115::1::::<><>::
+index.png::CompressedTexture2D::1090654935195353138::1717786115::1717786115::1::::<><>::
+NotWaitingForGodot.apple-touch-icon.png::CompressedTexture2D::2677882690970164309::1717785611::1717785611::1::::<><>::
+NotWaitingForGodot.icon.png::CompressedTexture2D::2012735358166318455::1717785611::1717785611::1::::<><>::
+NotWaitingForGodot.png::CompressedTexture2D::3663096956737379473::1717785611::1717785611::1::::<><>::

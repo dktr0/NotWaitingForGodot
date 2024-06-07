@@ -9,11 +9,8 @@ var playerStartZ;
 @onready var worldRequest = $"../WorldRequest";
 @onready var configurationRequest = $"../ConfigurationRequest";
 var yScale = 2.5;
-var frameCount = 0;
 
 func _physics_process(_delta):
-	frameCount = frameCount + 1;
-	#print(str(frameCount));
 	if Input.is_action_just_pressed("fullscreen"):
 		get_window().mode = Window.MODE_EXCLUSIVE_FULLSCREEN if (!((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN))) else Window.MODE_WINDOWED;
 
@@ -33,6 +30,7 @@ func getConfiguration():
 func _receivedConfiguration(_result, _response_code, _headers, body):
 	print("received configuration");
 	var txt = body.get_string_from_utf8();
+	print(txt);
 	var rows = txt.split("\n");
 	for rowNo in rows.size():
 		var cols = rows[rowNo].split(",");
@@ -43,12 +41,10 @@ func _receivedConfiguration(_result, _response_code, _headers, body):
 	playerStartX = float(configuration["PlayerStartX"]);
 	playerStartY = float(configuration["PlayerStartY"]);
 	playerStartZ = float(configuration["PlayerStartZ"]);
-	# deleteWorld();
 	getWorld(googleDocCSV(configurationDoc,configuration["WorldSheet"]));
 	
 func playerToStartPosition():
-	pass
-	#$"/root/NotWaitingForGodot/Player".playerStart(playerStartX,playerStartY,playerStartZ);
+	$"/root/NotWaitingForGodot/Player".playerStart(playerStartX,playerStartY,playerStartZ);
 
 func getWorld(url):
 	worldRequest.connect("request_completed", Callable(self, "_receivedWorld"));
@@ -78,7 +74,7 @@ func makeWater(aspects):
 	var z = aspects["z"];
 	var sb = StaticBody3D.new();
 	var boxShape = BoxShape3D.new();
-	boxShape.extents = Vector3(1,1,1);
+	boxShape.extents = Vector3(1,20,1);
 	var theOwner = sb.create_shape_owner(sb);
 	sb.shape_owner_add_shape(theOwner, boxShape);
 	var m = nwfgwaterbase.instantiate();
@@ -190,15 +186,6 @@ func makeAKey(aspects):
 	sb.position = Vector3(aspects["x"],y,aspects["z"]);
 	sb.add_to_group("keys");
 	add_child(sb);
-	
-#func invisibleCube(x=0,y=0,z=0,xSize=2,ySize=2,zSize=2):
-#	var sb = StaticBody3D.new();
-#	var boxShape = BoxShape3D.new();
-#	boxShape.extents = Vector3(xSize*0.5,ySize*0.5,zSize*0.5);
-#	var shapeOwner = sb.create_shape_owner(sb);
-#	sb.shape_owner_add_shape(owner, boxShape);
-#	sb.position = Vector3(x,y,z);
-#	add_child(sb);
 	
 func movableCube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2,axis="x"):
 	var sb = RigidBody3D.new();
