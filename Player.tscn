@@ -7,6 +7,7 @@
 size = Vector3(1.5, 1.8, 1.5)
 
 [sub_resource type="BoxShape3D" id="2"]
+size = Vector3(1.8, 1.8, 1.8)
 
 [node name="Player" type="CharacterBody3D" groups=["Player"]]
 script = ExtResource("1")
@@ -15,13 +16,13 @@ script = ExtResource("1")
 far = 1000.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0122819, 0.627224, -0.000934124)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0122819, 0.9866, -0.000934124)
 shape = SubResource("1")
 
 [node name="Area3D" type="Area3D" parent="."]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 2.56494, 0, 0, 0, 1, 0, 2.54884, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83923, 0)
 shape = SubResource("2")
 
 [node name="Crab" parent="." instance=ExtResource("2_mcd74")]

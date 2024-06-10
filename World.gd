@@ -8,7 +8,7 @@ var playerStartY;
 var playerStartZ;
 @onready var worldRequest = $"../WorldRequest";
 @onready var configurationRequest = $"../ConfigurationRequest";
-var yScale = 2.5;
+var yScale = 2;
 
 func _physics_process(_delta):
 	if Input.is_action_just_pressed("fullscreen"):
@@ -71,62 +71,24 @@ func deleteWorld():
 	for i in range(0, get_child_count()):
 		get_child(i).queue_free()
 
-func makeWater(aspects):
-	var nwfgwaterbase = preload("res://models/nwfgwaterbase.tscn");
-	var x = aspects["x"];
-	var y = aspects["y"];
-	var z = aspects["z"];
-	var sb = StaticBody3D.new();
-	var boxShape = BoxShape3D.new();
-	boxShape.extents = Vector3(1,20,1);
-	var theOwner = sb.create_shape_owner(sb);
-	sb.shape_owner_add_shape(theOwner, boxShape);
-	var m = nwfgwaterbase.instantiate();
-	sb.add_child(m);
-	sb.position = Vector3(x,y,z);
-	realizeClass(aspects,sb);	
-	realizeCollision(aspects,sb);
-	add_child(sb);
-
-func makeStone(aspects):
-	var nwfgstonewall = preload("res://models/nwfgstonewall.tscn")
+func makeGrassStoneWater(aspects):
+	var factory;
+	if aspects["substance"] == "water":
+		factory = preload("res://models/nwfgwaterbase.tscn");
+	elif aspects["substance"] == "stone":
+		factory = preload("res://models/nwfgstonewall.tscn");
+	else:
+		factory = preload("res://models/nwfggrasswall.tscn");
 	var x = aspects["x"];
 	var y = aspects["y"];
 	var z = aspects["z"];
 	var h = aspects["h"];
-	var sb = StaticBody3D.new();
-	var boxShape = BoxShape3D.new();
-	boxShape.extents = Vector3(1,1*h,1);
-	var shapeOwner = sb.create_shape_owner(sb);
-	sb.shape_owner_add_shape(shapeOwner, boxShape);
 	for n in (h+1):
-		var m = nwfgstonewall.instantiate();
-		m.position = Vector3(0,yScale*n,0);
-		sb.add_child(m);
-	sb.position = Vector3(x,y,z);
-	realizeClass(aspects,sb);	
-	realizeCollision(aspects,sb);
-	add_child(sb);
-
-func makeGrass(aspects):
-	var nwfggrasswall = preload("res://models/nwfggrasswall.tscn");
-	var x = aspects["x"];
-	var y = aspects["y"];
-	var z = aspects["z"];
-	var h = aspects["h"];
-	var sb = StaticBody3D.new();
-	var boxShape = BoxShape3D.new();
-	boxShape.extents = Vector3(1,1*h,1);
-	var shapeOwner = sb.create_shape_owner(sb);
-	sb.shape_owner_add_shape(shapeOwner, boxShape);
-	for n in (h+1):
-		var m = nwfggrasswall.instantiate();
-		m.position = Vector3(0,yScale*n,0);
-		sb.add_child(m);
-	sb.position = Vector3(x,y,z);
-	realizeClass(aspects,sb);	
-	realizeCollision(aspects,sb);
-	add_child(sb);
+		var sb = factory.instantiate();
+		sb.position = Vector3(x,n-1,z);
+		realizeClass(aspects,sb);	
+		realizeCollision(aspects,sb);
+		add_child(sb);
 	
 func makeACube(aspects,x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
 	var sb = StaticBody3D.new();
@@ -321,11 +283,11 @@ func realizeAspects(aspects={}):
 	var y = aspects["y"];
 	var z = aspects["z"];
 	if aspects["substance"] == "water":
-		makeWater(aspects);
+		makeGrassStoneWater(aspects);
 	elif aspects["substance"] == "stone":
-		makeStone(aspects);
+		makeGrassStoneWater(aspects);
 	else: # substance == "grass 
-		makeGrass(aspects);
+		makeGrassStoneWater(aspects);
 	if aspects.has("door"):
 		makeADoor(x,y+(h*yScale),z,0,0,0,2,yScale,2);
 	if aspects.has("key"):
