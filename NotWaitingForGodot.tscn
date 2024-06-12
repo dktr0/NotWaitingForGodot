@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://chjkh4ohuant6"]
+[gd_scene load_steps=7 format=3 uid="uid://chjkh4ohuant6"]
 
 [ext_resource type="PackedScene" uid="uid://dnskx06n1r45o" path="res://Player.tscn" id="1"]
 [ext_resource type="Script" path="res://World.gd" id="3"]
+[ext_resource type="PackedScene" uid="uid://c51g3lkakyde7" path="res://title_ui.tscn" id="3_3codd"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tqj0p"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -17,6 +18,8 @@ tonemap_mode = 2
 glow_enabled = true
 
 [node name="NotWaitingForGodot" type="Node3D"]
+
+[node name="TitleUI" parent="." instance=ExtResource("3_3codd")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_05c0s")

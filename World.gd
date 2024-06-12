@@ -1,7 +1,8 @@
 extends Node3D
 
-var configurationDoc = "14qT2o_0n8Im94eKiRVjA4K4qozhorJw0Z95SlzhMxaM";
-var configurationSheet = "1674844352";
+var docID;
+var configID;
+var worldID;
 var configuration = {};
 var playerStartX;
 var playerStartY;
@@ -9,6 +10,8 @@ var playerStartZ;
 @onready var worldRequest = $"../WorldRequest";
 @onready var configurationRequest = $"../ConfigurationRequest";
 var yScale = 2;
+@onready var ui = $"../TitleUI";
+@onready var player = $"/root/NotWaitingForGodot/Player";
 
 func _physics_process(_delta):
 	if Input.is_action_just_pressed("fullscreen"):
@@ -17,55 +20,65 @@ func _physics_process(_delta):
 func googleDocCSV(docID,sheetID):
 	return "https://docs.google.com/spreadsheets/d/" + docID + "/gviz/tq?gid=" + sheetID + "&tqx=out:csv";
 	
-func _ready():
-	print("World::_ready()");
-	getConfiguration();
-	
-func getConfiguration():
+func getConfiguration(newDocID,newConfigID):
+	docID = newDocID;
+	configID = newConfigID;
 	configurationRequest.connect("request_completed", Callable(self, "_receivedConfiguration"));
-	var error = configurationRequest.request(googleDocCSV(configurationDoc,configurationSheet));
+	var error = configurationRequest.request(googleDocCSV(docID,configID));
 	if error != OK:
-		push_error("An error occurred in the HTTP request for the configuration");
+		ui.setError("error in HTTP request for configuration (possibly bad document or configuration IDs)");
+	else:
+		ui.setLog("requesting configuration sheet...");
 
 func _receivedConfiguration(result, response_code, headers, body):
-	print("received configuration");
-	
 	if result != HTTPRequest.RESULT_SUCCESS:
-		printerr("error receiving configuration: " + str(result) + " " + str(response_code)+ " " + str(headers) + " " + str(body));
-		return
+		ui.setError("error receiving configuration: " + str(result) + " " + str(response_code)+ " " + str(headers) + " " + str(body));
+		return;
+	else:
+		ui.setLog("configuration sheet received")
 	var txt = body.get_string_from_utf8();
-	print(txt);
 	var rows = txt.split("\n");
 	for rowNo in rows.size():
 		var cols = rows[rowNo].split(",");
 		var key = cols[0].substr(1,cols[0].length()-2);	
 		var value = cols[1].substr(1,cols[1].length()-2);
 		configuration[key] = value;
-	print(str(configuration));
-	playerStartX = float(configuration["PlayerStartX"]);
-	playerStartY = float(configuration["PlayerStartY"]);
-	playerStartZ = float(configuration["PlayerStartZ"]);
-	getWorld(googleDocCSV(configurationDoc,configuration["WorldSheet"]));
+	# print(str(configuration));
+	playerStartX = float(configuration.get("PlayerStartX",0));
+	playerStartY = float(configuration.get("PlayerStartY",0));
+	playerStartZ = float(configuration.get("PlayerStartZ",0));
+	if configuration.has("WorldSheet"):
+		worldID = configuration["WorldSheet"];
+		getWorld(googleDocCSV(docID,worldID));
+	else:
+		ui.setError("no WorldSheet ID found in configuration (possibly problem in configuration sheet, possibly bad IDs above)");
 	
 func playerToStartPosition():
-	$"/root/NotWaitingForGodot/Player".playerStart(playerStartX,playerStartY,playerStartZ);
+	player.playerStart(playerStartX,playerStartY,playerStartZ);
 
 func getWorld(url):
 	worldRequest.connect("request_completed", Callable(self, "_receivedWorld"));
 	var error = worldRequest.request(url);
 	if error != OK:
-		push_error("An error occurred in the HTTP request.")
+		ui.setError("error in HTTP request for world (possibly bad world sheet ID in configuration sheet)");
+	else:
+		ui.setLog("requesting world sheet...");
 	
-func _receivedWorld(_result, _response_code, _headers, body):
-	print("received world");
-	var map = body.get_string_from_utf8();
-	loadCSVMap(map);
-	playerToStartPosition();
-	
+func _receivedWorld(result, response_code, headers, body):
+	if result != HTTPRequest.RESULT_SUCCESS:
+		ui.setError("error receiving world: " + str(result) + " " + str(response_code)+ " " + str(headers) + " " + str(body));
+	else:
+		ui.setLog("world sheet received");
+		var map = body.get_string_from_utf8();
+		loadCSVMap(map);
+		playerToStartPosition();
+		ui.hide();
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED);
+
 func reset():
 	print("World::reset()");
 	deleteWorld();
-	getConfiguration();
+	getConfiguration(docID,configID);
 
 func deleteWorld():
 	for i in range(0, get_child_count()):

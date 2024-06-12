@@ -1,0 +1,97 @@
+[gd_scene load_steps=2 format=3 uid="uid://c51g3lkakyde7"]
+
+[ext_resource type="Script" path="res://title_ui.gd" id="1_kq2v7"]
+
+[node name="TitleUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kq2v7")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.215509, 0.311043, 0.295304, 1)
+
+[node name="TitleLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Not Waiting For Godot"
+fit_content = true
+
+[node name="ConfigurationContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -128.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ResetIDsContainer" type="HBoxContainer" parent="ConfigurationContainer"]
+layout_mode = 2
+
+[node name="ResetIDsButton" type="Button" parent="ConfigurationContainer/ResetIDsContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Reset IDs"
+
+[node name="DocIDContainer" type="HBoxContainer" parent="ConfigurationContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DocIDLabel" type="RichTextLabel" parent="ConfigurationContainer/DocIDContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Google Doc ID"
+
+[node name="DocIDLineEdit" type="LineEdit" parent="ConfigurationContainer/DocIDContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ConfigIDContainer" type="HBoxContainer" parent="ConfigurationContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ConfigIDLabel" type="RichTextLabel" parent="ConfigurationContainer/ConfigIDContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "ID of Configuration Sheet"
+
+[node name="ConfigIDLineEdit" type="LineEdit" parent="ConfigurationContainer/ConfigIDContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LoadButton" type="Button" parent="ConfigurationContainer"]
+layout_mode = 2
+text = "Click to Load/Reload World"
+
+[node name="StatusContainer" type="HBoxContainer" parent="ConfigurationContainer"]
+layout_mode = 2
+
+[node name="StatusLabel" type="RichTextLabel" parent="ConfigurationContainer/StatusContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Status:"
+fit_content = true
+
+[node name="StatusDisplayLabel" type="RichTextLabel" parent="ConfigurationContainer/StatusContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "---"
+fit_content = true
+
+[connection signal="pressed" from="ConfigurationContainer/ResetIDsContainer/ResetIDsButton" to="." method="_on_reset_ids_button_pressed"]
+[connection signal="pressed" from="ConfigurationContainer/LoadButton" to="." method="_on_load_button_pressed"]

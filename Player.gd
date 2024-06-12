@@ -23,7 +23,7 @@ func playerStart(x=0,y=0,z=0):
 
 func _ready():
 	print("Player::ready() " + name);
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	# 
 
 func _input(event):	
 	if cameraMode == 1:
