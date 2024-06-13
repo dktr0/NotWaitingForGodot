@@ -86,8 +86,10 @@ func deleteWorld():
 
 func makeGrassStoneWater(aspects):
 	var factory;
+	var baseFactory;
 	if aspects["substance"] == "water":
-		factory = preload("res://models/nwfgwaterbase.tscn");
+		factory = preload("res://WaterWall.tscn");
+		baseFactory = preload("res://models/nwfgwaterbase.tscn");
 	elif aspects["substance"] == "stone":
 		factory = preload("res://models/nwfgstonewall.tscn");
 	else:
@@ -97,7 +99,11 @@ func makeGrassStoneWater(aspects):
 	var z = aspects["z"];
 	var h = aspects["h"];
 	for n in (h+1):
-		var sb = factory.instantiate();
+		var sb;
+		if n == h && baseFactory != null:
+			sb = baseFactory.instantiate();
+		else:
+			sb = factory.instantiate();
 		sb.position = Vector3(x,n,z);
 		realizeClass(aspects,sb);	
 		realizeCollision(aspects,sb);
