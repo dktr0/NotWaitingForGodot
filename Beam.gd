@@ -9,8 +9,7 @@ var _class = null;
 var aspects = {};
 
 func parseAspects():
-	#on = aspects.get("on",on);
-	on = true;
+	on = aspects.get("on",on);
 	_class = aspects.get("class",_class);
 	beamDirection = aspects.get("beam","down");
 	
