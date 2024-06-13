@@ -9,7 +9,8 @@ var _class = null;
 var aspects = {};
 
 func parseAspects():
-	on = aspects.get("on",on);
+	#on = aspects.get("on",on);
+	on = true;
 	_class = aspects.get("class",_class);
 	beamDirection = aspects.get("beam","down");
 	
@@ -32,21 +33,21 @@ func _ready():
 	
 func scaleAndCast(d=50):
 	if beamDirection == "down":
-		rayCast.target_position = Vector3(0,0,50);
-		rayMesh.set_scale(Vector3(0.1,0.1,d/2.0));
-		rayMesh.set_position(Vector3(0,0,d/2.0));
+		rayCast.target_position = Vector3(0,0,d);
+		rayMesh.set_scale(Vector3(0.1,0.1,d));
+		rayMesh.set_position(Vector3(1,1,d/2.0));
 	elif beamDirection == "up":
-		rayCast.target_position = Vector3(0,0,-50);
-		rayMesh.set_scale(Vector3(0.1,0.1,d*(-1)/2.0));
-		rayMesh.set_position(Vector3(0,0,(d*-1)/2.0));
+		rayCast.target_position = Vector3(0,0,d*(-1));
+		rayMesh.set_scale(Vector3(0.1,0.1,d));
+		rayMesh.set_position(Vector3(1,1,(d*-1)/2.0));
 	elif beamDirection == "left":
-		rayCast.target_position = Vector3(-50,0,0);
-		rayMesh.set_scale(Vector3(d*(-1.0)/2.0,0.1,0.1));
-		rayMesh.set_position(Vector3(d*(-1.0)/2.0,0,0));
+		rayCast.target_position = Vector3(d*(-1),0,0);
+		rayMesh.set_scale(Vector3(d,0.1,0.1));
+		rayMesh.set_position(Vector3(d*(-1.0)/2.0,1,1));
 	elif beamDirection == "right":
-		rayCast.target_position = Vector3(50,0,0);
-		rayMesh.set_scale(Vector3(d/2.0,0.1,0.1));
-		rayMesh.set_position(Vector3(d/2.0,0,0));
+		rayCast.target_position = Vector3(d,0,0);
+		rayMesh.set_scale(Vector3(d,0.1,0.1));
+		rayMesh.set_position(Vector3(d/2.0,1,1));
 	else:
 		print("UHOH - unrecognized beam direction (freeing beam node)");
 		queue_free();

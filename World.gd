@@ -9,7 +9,7 @@ var playerStartY;
 var playerStartZ;
 @onready var worldRequest = $"../WorldRequest";
 @onready var configurationRequest = $"../ConfigurationRequest";
-var yScale = 2;
+var gridScale = 2;
 @onready var ui = $"../TitleUI";
 @onready var player = $"/root/NotWaitingForGodot/Player";
 
@@ -98,118 +98,72 @@ func makeGrassStoneWater(aspects):
 	var h = aspects["h"];
 	for n in (h+1):
 		var sb = factory.instantiate();
-		sb.position = Vector3(x,n-1,z);
+		sb.position = Vector3(x,n,z);
 		realizeClass(aspects,sb);	
 		realizeCollision(aspects,sb);
 		add_child(sb);
-	
-func makeACube(aspects,x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
-	var sb = StaticBody3D.new();
-	var boxShape = BoxShape3D.new();
-	boxShape.extents = Vector3(xSize*0.5,ySize*0.5,zSize*0.5);
-	var shapeOwner = sb.create_shape_owner(sb);
-	sb.shape_owner_add_shape(shapeOwner, boxShape);
-	var m = MeshInstance3D.new();
-	var cm = BoxMesh.new();
-	cm.size = Vector3(xSize,ySize,zSize);
-	var sm = StandardMaterial3D.new();
-	sm.albedo_color = Color( r, g, b, 1 );
-	cm.material = sm;
-	m.mesh = cm;
-	sb.add_child(m);
-	sb.position = Vector3(x,y,z);
-	realizeClass(aspects,sb);	
-	realizeCollision(aspects,sb);
-	add_child(sb);
 	
 func makeABeam(aspects):	
 	var scene = preload("res://Beam.tscn");
 	var beam = scene.instantiate();
 	beam.aspects = aspects;
-	var y = aspects["y"] + (aspects["h"] * yScale + yScale);
+	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
 	beam.position = Vector3(aspects["x"],y,aspects["z"]);
 	realizeClass(aspects,beam);
 	realizeCollision(aspects,beam);
 	add_child(beam);
 	
-func makeADoor(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2):
-	var sb = StaticBody3D.new();
-	
-	var boxShape = BoxShape3D.new();
-	boxShape.extents = Vector3(xSize*0.5,ySize*0.5,zSize*0.5);
-	var shapeOwner = sb.create_shape_owner(sb);
-	sb.shape_owner_add_shape(shapeOwner, boxShape);
-	
-	var m = MeshInstance3D.new();
-	var cm = BoxMesh.new();
-	cm.size = Vector3(xSize,ySize,zSize);
-	var sm = StandardMaterial3D.new();
-	sm.albedo_color = Color( r, g, b, 1 );
-	cm.material = sm;
-	m.mesh = cm;
-	sb.add_child(m);
-	sb.position = Vector3(x+0.5,y+1.5,z+0.5);
-	sb.add_to_group("doors");
-	add_child(sb);
+func makeADoor(aspects):
+	var scene = preload("res://models/Door.tscn");
+	var door = scene.instantiate();
+	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
+	door.position = Vector3(aspects["x"],y,aspects["z"]);
+	door.add_to_group("doors");
+	realizeClass(aspects,door);
+	realizeCollision(aspects,door);
+	add_child(door);
 	
 func makeAKey(aspects):
-	var sb = StaticBody3D.new();
-	var boxShape = BoxShape3D.new();
-	boxShape.extents = Vector3(1,1,1);
-	var shapeOwner = sb.create_shape_owner(sb);
-	sb.shape_owner_add_shape(shapeOwner, boxShape);
-	var key = preload("res://models/Key.tscn");
-	var m = key.instantiate();
-	sb.add_child(m);
-	var y = aspects["y"] + (aspects["h"]*yScale+yScale);
-	sb.position = Vector3(aspects["x"],y,aspects["z"]);
-	sb.add_to_group("keys");
-	add_child(sb);
+	var scene = preload("res://models/Key.tscn");
+	var key = scene.instantiate();
+	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
+	key.position = Vector3(aspects["x"],y,aspects["z"]);
+	key.add_to_group("keys");
+	realizeClass(aspects,key);
+	realizeCollision(aspects,key);
+	add_child(key);
+
+func makeAnObelisk(aspects):
+	var scene = preload("res://models/Obelisk.tscn");
+	var o = scene.instantiate();
+	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
+	o.position = Vector3(aspects["x"],y,aspects["z"]);
+	realizeClass(aspects,o);
+	realizeCollision(aspects,o);
+	add_child(o);
 	
-func movableCube(x=0,y=0,z=0,r=1,g=0,b=0,xSize=2,ySize=2,zSize=2,axis="x"):
-	var sb = RigidBody3D.new();
-	sb.axis_lock_angular_x = true;
-	sb.axis_lock_angular_y = true;
-	sb.axis_lock_angular_z = true;
-	if axis=="xz":
-		sb.axis_lock_linear_y = true;		
-	elif axis=="x":
-		sb.axis_lock_linear_y = true;		
-		sb.axis_lock_linear_z = true;		
-	elif axis=="z":
-		sb.axis_lock_linear_y = true;		
-		sb.axis_lock_linear_x = true;		
-	var boxShape = BoxShape3D.new();
-	boxShape.extents = Vector3(xSize*0.5,ySize*0.5,zSize*0.5);
-	var shapeOwner = sb.create_shape_owner(sb);
-	sb.shape_owner_add_shape(shapeOwner, boxShape);
+func movableBlock(aspects):
+	var scene = preload("res://MovableCube.tscn");
+	var mc = scene.instantiate();
+	mc.axis_lock_angular_x = true;
+	mc.axis_lock_angular_y = true;
+	mc.axis_lock_angular_z = true;
+	if aspects["movableBlock"]=="xz":
+		mc.axis_lock_linear_y = true;		
+	elif aspects["movableBlock"]=="x":
+		mc.axis_lock_linear_y = true;		
+		mc.axis_lock_linear_z = true;		
+	elif aspects["movableBlock"]=="z":
+		mc.axis_lock_linear_y = true;		
+		mc.axis_lock_linear_x = true;
+	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
+	mc.position = Vector3(aspects["x"],y,aspects["z"]);
+	mc.set_mass(1);
+	# sb.set_friction(1); TODO: not in Godot 4???
+	# sb.set_bounce(0); TODO: not in Godot 4???
+	mc.set_linear_damp(5);
+	add_child(mc);
 	
-	var m = MeshInstance3D.new();
-	var cm = BoxMesh.new();
-	cm.size = Vector3(xSize,ySize,zSize);
-	var sm = StandardMaterial3D.new();
-	sm.albedo_color = Color( r, g, b, 1 );
-	cm.material = sm;
-	m.mesh = cm;
-	sb.add_child(m);
-	sb.position = Vector3(x,y,z);
-	sb.set_mass(1);
-	# sb.set_friction(1); not in Godot 4???
-	# sb.set_bounce(0); not in Godot 4???
-	sb.set_linear_damp(5);
-	add_child(sb);
-	
-func makeASphere(x=0,y=0,z=0,r=1,g=0,b=0):
-	print("makeASphere");
-	var m = MeshInstance3D.new();
-	var sm = SphereMesh.new();
-	var mat = StandardMaterial3D.new();
-	mat.albedo_color = Color(r,g,b,1);
-	sm.material = mat;
-	m.mesh = sm;
-	m.position = Vector3(x,y,z);
-	add_child(m);
-			
 #func loadCSVMapFile(path="res://map.txt"):
 #	print("loading CSV map called " + path);
 #	var file = File.new();
@@ -220,14 +174,14 @@ func makeASphere(x=0,y=0,z=0,r=1,g=0,b=0):
 func loadCSVMap(map=""):
 	var rows = map.split("\n");
 	for rowNo in rows.size():
-		csvMapRow(rows[rowNo],0.0,0.0,-20.0+(float(rowNo)*2.0),2.0,0.0,0.0);
+		csvMapRow(rows[rowNo],rowNo);
 
-func csvMapRow(row="",xStart=0.0,yStart=0.0,zStart=0.0,xInc=0.0,yInc=0.0,zInc=0.0):
+func csvMapRow(row,rowNo):
 	var cells = row.split(",");
 	for cellNo in cells.size():
-		var x = xStart + (xInc * float(cellNo));
-		var y = yStart + (yInc * float(cellNo));
-		var z = zStart + (zInc * float(cellNo));
+		var x = 2.0 * float(cellNo);
+		var y = 0;
+		var z = 2.0 * float(rowNo);
 		csvMapCell(x,y,z,cells[cellNo]);
 		
 func csvMapCell(x,y,z,cell=""):
@@ -264,6 +218,8 @@ func parseCode(code,aspects):
 		aspects["substance"] = "stone";
 	elif code == "g":
 		aspects["substance"] = "grass";
+	elif code == "obelisk":
+		aspects["obelisk"] = true;
 	elif code == "key":
 		aspects["key"] = true;
 	elif code == "door":
@@ -291,10 +247,6 @@ func parseCode(code,aspects):
 		parseCollision(code,aspects);
 		
 func realizeAspects(aspects={}):
-	var h = aspects["h"];
-	var x = aspects["x"];
-	var y = aspects["y"];
-	var z = aspects["z"];
 	if aspects["substance"] == "water":
 		makeGrassStoneWater(aspects);
 	elif aspects["substance"] == "stone":
@@ -302,21 +254,21 @@ func realizeAspects(aspects={}):
 	else: # substance == "grass 
 		makeGrassStoneWater(aspects);
 	if aspects.has("door"):
-		makeADoor(x,y+(h*yScale),z,0,0,0,2,yScale,2);
-	if aspects.has("key"):
+		makeADoor(aspects);
+	elif aspects.has("key"):
 		makeAKey(aspects);
-	if aspects.has("movableBlock"):
-		movableCube(x,y+(h*yScale+yScale),z,0,1,1,2,2,2,aspects["movableBlock"]);
+	elif aspects.has("movableBlock"):
+		movableBlock(aspects);
 	elif aspects.has("beam"):
 		makeABeam(aspects);
+	elif aspects.has("obelisk"):
+		makeAnObelisk(aspects);
 
 func parseFunction(funcName,code):
 	# if code begins with funcName and an open bracket...
 	if code.substr(0,funcName.length()+1) == (funcName + "("):
-		code = code.trim_prefix(funcName+"(");
-		# ... remove one closing bracket...
-		code = code.trim_suffix(")");
-		# ... and return the rest!
+		code = code.trim_prefix(funcName+"("); # ... remove one closing bracket...
+		code = code.trim_suffix(")"); # ... and return the rest!
 		return code;
 	else:
 		return null;

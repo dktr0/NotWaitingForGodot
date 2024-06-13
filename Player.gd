@@ -56,8 +56,8 @@ func _physics_process(delta):
 		
 func _physics_process1(delta):
 	if global_position.y > -20:
-		# move_and_slide(fall, Vector3.UP)
-		# move_and_slide(fall,Vector3.UP,false,4,0.785398,false); 
+		#move_and_slide(fall, Vector3.UP)
+		#move_and_slide(fall,Vector3.UP,false,4,0.785398,false); 
 		pass
 	if not is_on_floor():
 		fall.y -= gravity
@@ -75,10 +75,11 @@ func _physics_process1(delta):
 	direction += zMove * transform.basis.z;
 	if direction.length() > 1:
 		direction = direction.normalized();
-	vel = vel.lerp(direction * speed, acceleration * delta);
+	velocity = velocity.lerp(direction * speed, acceleration * delta);
 	# velocity = move_and_slide(velocity, Vector3.UP);
 	# velocity = move_and_slide(velocity,Vector3.UP,false,4,0.785398,false);
-	vel = move_and_collide (vel, false);
+	# velocity = move_and_collide (vel, false);
+	move_and_slide()
 	
 func _physics_process2(delta):
 	if global_position.y > -20:
