@@ -119,6 +119,7 @@ func _on_Area_body_entered(body):
 			print("you have " + str(keys) + " keys");
 	if body.is_in_group("keys"):
 		keys = keys + 1;
+		$"../SoundBank".pickup();
 		print("you have " + str(keys) + " keys");
 		body.queue_free();
 	if body.is_in_group("collisionOn_laser1"):

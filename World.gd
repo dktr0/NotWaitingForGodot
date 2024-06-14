@@ -80,6 +80,10 @@ func reset():
 	deleteWorld();
 	getConfiguration(docID,configID);
 
+func gameOver():
+	$"../SoundBank".laser();
+	reset();
+
 func deleteWorld():
 	for i in range(0, get_child_count()):
 		get_child(i).queue_free()
@@ -318,7 +322,9 @@ func realizeCollision(aspects,sb):
 func collisionOn(groupToTurnOn):
 	# print("collisionOn triggered! " + groupToTurnOn);
 	get_tree().call_group(groupToTurnOn, "turnOn");
+	$"../SoundBank".buttonpush();
 	
 func collisionOff(groupToTurnOff):
 	# print("collisionOff triggered! " + groupToTurnOff);
 	get_tree().call_group(groupToTurnOff, "turnOff");
+	$"../SoundBank".buttonpush();

@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=3 uid="uid://cnp3w7uug8uj8"]
+
+[ext_resource type="AudioStream" uid="uid://diygfu1yt6dc6" path="res://sounds/buttonpush.wav" id="1_2bpb8"]
+[ext_resource type="Script" path="res://SoundBank.gd" id="1_gupqt"]
+[ext_resource type="AudioStream" uid="uid://bw8ol0awdsvjo" path="res://sounds/laser.wav" id="2_j5qmh"]
+[ext_resource type="AudioStream" uid="uid://dvxg4vlok05om" path="res://sounds/pickup.wav" id="3_40008"]
+[ext_resource type="AudioStream" uid="uid://bmw8c36wdkart" path="res://sounds/win.wav" id="4_qxwdb"]
+
+[node name="SoundBank" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_gupqt")
+
+[node name="buttonpush" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("1_2bpb8")
+
+[node name="laser" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_j5qmh")
+
+[node name="pickup" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_40008")
+
+[node name="win" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_qxwdb")

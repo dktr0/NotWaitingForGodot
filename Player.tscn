@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://d2gc5uvyfcmuh" path="res://models/Crab.glb" id="2_mcd74"]
 
 [sub_resource type="BoxShape3D" id="1"]
-size = Vector3(1.5, 1.8, 1.5)
+size = Vector3(1.2, 1.8, 1.2)
 
 [sub_resource type="BoxShape3D" id="2"]
 size = Vector3(1.8, 1.8, 1.8)

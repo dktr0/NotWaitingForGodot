@@ -57,8 +57,7 @@ func _physics_process(_delta):
 		if hit != null:
 			if hit.is_in_group("Player"):
 				print("hit player");
-				$"/root/NotWaitingForGodot/World".reset();
+				$"/root/NotWaitingForGodot/World".gameOver();
 			elif !hit.is_in_group("Player"):
-			# elif !hit.is_in_group("Beam") && !hit.is_in_group("Player"):
 				var d = get_position().distance_to(hit.get_position());
 				scaleAndCast(d);
