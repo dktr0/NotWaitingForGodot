@@ -1,7 +1,6 @@
 extends CharacterBody3D
 
-var vel = Vector3();
-var fall = Vector3();
+var fall = 0;
 var speed = 18;
 var acceleration = 6;
 var gravity = 1;
@@ -23,7 +22,7 @@ func playerStart(x=0,y=0,z=0):
 
 func _ready():
 	print("Player::ready() " + name);
-	# 
+	set_up_direction(Vector3.UP);
 
 func _input(event):	
 	if cameraMode == 1:
@@ -56,13 +55,10 @@ func _physics_process(delta):
 		
 func _physics_process1(delta):
 	if global_position.y > -20:
-		#move_and_slide(fall, Vector3.UP)
-		#move_and_slide(fall,Vector3.UP,false,4,0.785398,false); 
-		pass
-	if not is_on_floor():
-		fall.y -= gravity
-	if Input.is_action_just_pressed("a_button") and is_on_floor():
-		fall.y = jump
+		if not is_on_floor():
+			fall -= gravity;
+		elif Input.is_action_just_pressed("a_button"):
+			fall = jump;
 	var leftStick = Input.get_vector("left_stick_left","left_stick_right","left_stick_up","left_stick_down");
 	var rightStick = Input.get_vector("right_stick_left","right_stick_right","right_stick_up","right_stick_down");
 	rotate_y(-rightStick.x*0.04); 
@@ -76,20 +72,16 @@ func _physics_process1(delta):
 	if direction.length() > 1:
 		direction = direction.normalized();
 	velocity = velocity.lerp(direction * speed, acceleration * delta);
-	# velocity = move_and_slide(velocity, Vector3.UP);
-	# velocity = move_and_slide(velocity,Vector3.UP,false,4,0.785398,false);
-	# velocity = move_and_collide (vel, false);
-	move_and_slide()
+	velocity.y = fall;
+	set_velocity(velocity);
+	move_and_slide();
 	
 func _physics_process2(delta):
 	if global_position.y > -20:
-		set_velocity(fall)
-		set_up_direction(Vector3.UP)
-		move_and_slide()
-	if not is_on_floor():
-		fall.y -= gravity
-	if Input.is_action_just_pressed("a_button") and is_on_floor():
-		fall.y = jump
+		if not is_on_floor():
+			fall -= gravity;
+		elif Input.is_action_just_pressed("a_button"):
+			fall = jump;
 	var leftStick = Input.get_vector("left_stick_left","left_stick_right","left_stick_up","left_stick_down");
 	var rightStick = Input.get_vector("right_stick_left","right_stick_right","right_stick_up","right_stick_down");
 	rotate_y(-rightStick.x*0.04); 
@@ -107,15 +99,17 @@ func _physics_process2(delta):
 	var zMove = leftStick.y;
 	var direction = Vector3(0,0,0);
 	direction += xMove * transform.basis.x;
-	direction += zMove * transform.basis.z;
+	direction += zMove * transform.basis.z
 	if direction.length() > 1:
 		direction = direction.normalized();
 	velocity = velocity.lerp(direction * speed, acceleration * delta);
-	set_velocity(velocity)
-	set_up_direction(Vector3.UP)
-	move_and_slide()
-	velocity = velocity;
-
+	velocity.y = fall;
+	set_velocity(velocity);
+	move_and_slide();
+	for i in get_slide_collision_count():
+		var c = get_slide_collision(i);
+		if c.get_collider() is RigidBody3D:
+			c.get_collider().apply_central_impulse(-c.get_normal() * 1.0);
 
 func _on_Area_body_entered(body):
 	if body.is_in_group("doors"):

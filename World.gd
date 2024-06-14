@@ -149,25 +149,27 @@ func makeAnObelisk(aspects):
 	add_child(o);
 	
 func movableBlock(aspects):
+	print("movableBlock");
 	var scene = preload("res://MovableCube.tscn");
 	var mc = scene.instantiate();
 	mc.axis_lock_angular_x = true;
 	mc.axis_lock_angular_y = true;
 	mc.axis_lock_angular_z = true;
 	if aspects["movableBlock"]=="xz":
-		mc.axis_lock_linear_y = true;		
+		print("axis_lock_linear_y");
+		mc.axis_lock_linear_y = true;
 	elif aspects["movableBlock"]=="x":
-		mc.axis_lock_linear_y = true;		
-		mc.axis_lock_linear_z = true;		
+		print("axis_lock_linear_y and z");
+		mc.axis_lock_linear_y = true;
+		mc.axis_lock_linear_z = true;
 	elif aspects["movableBlock"]=="z":
-		mc.axis_lock_linear_y = true;		
+		print("axis_lock_linear_y and x");
+		mc.axis_lock_linear_y = true;
 		mc.axis_lock_linear_x = true;
 	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
 	mc.position = Vector3(aspects["x"],y,aspects["z"]);
 	mc.set_mass(1);
-	# sb.set_friction(1); TODO: not in Godot 4???
-	# sb.set_bounce(0); TODO: not in Godot 4???
-	mc.set_linear_damp(5);
+	mc.set_linear_damp(5); 
 	add_child(mc);
 	
 #func loadCSVMapFile(path="res://map.txt"):
@@ -264,6 +266,7 @@ func realizeAspects(aspects={}):
 	elif aspects.has("key"):
 		makeAKey(aspects);
 	elif aspects.has("movableBlock"):
+		print("here movableBlock")
 		movableBlock(aspects);
 	elif aspects.has("beam"):
 		makeABeam(aspects);
@@ -284,25 +287,25 @@ func parseCollision(code,aspects):
 	if a != null:
 		var b = parseFunction("on",a);
 		if b != null:
-			print("parsed collision(on = " + b);
+			# print("parsed collision(on = " + b);
 			aspects["collisionOn"] = b;
 			return;
 		b = parseFunction("off",a);
 		if b != null:
-			print("parsed collision(off = " + b);
+			# print("parsed collision(off = " + b);
 			aspects["collisionOff"] = b;
 			
 func parseClass(code,aspects):
 	var a = parseFunction("class",code);
 	if a != null:
-		print("parsed class = " + a);
+		# print("parsed class = " + a);
 		aspects["class"] = a;
 
 func realizeClass(aspects,sb):
 	var _class = aspects.get("class",null);
 	if _class != null:
 		sb.add_to_group(_class);
-		print("adding object to group " + _class);
+		# print("adding object to group " + _class);
 
 func realizeCollision(aspects,sb):
 	var cOn = aspects.get("collisionOn",null);
@@ -313,9 +316,9 @@ func realizeCollision(aspects,sb):
 		sb.add_to_group("collisionOff_" + cOff);
 	
 func collisionOn(groupToTurnOn):
-	print("collisionOn triggered! " + groupToTurnOn);
-	# todo: find all objects of specified group and call on()
+	# print("collisionOn triggered! " + groupToTurnOn);
+	get_tree().call_group(groupToTurnOn, "turnOn");
 	
 func collisionOff(groupToTurnOff):
-	print("collisionOff triggered! " + groupToTurnOff);
-	# todo: find all objects of specified group and call off()
+	# print("collisionOff triggered! " + groupToTurnOff);
+	get_tree().call_group(groupToTurnOff, "turnOff");
