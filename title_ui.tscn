@@ -20,14 +20,30 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.215509, 0.311043, 0.295304, 1)
 
-[node name="TitleLabel" type="RichTextLabel" parent="."]
+[node name="TitleCreditsInstructions" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Not Waiting For Godot"
+text = "Not Waiting For Godot
+
+Contributors: Leo Jatuweerapong, Jack Le Tran, Nadia Lofaro, David Ogborn
+
+Built on top of the Godot game engine. All project-specific code and assets (ie. not the Godot engine itself) is released Creative Commons 0 (CC0, public domain).
+
+To play: Click the button below that says Click to load.
+
+Controls:
+To move use W-A-S-D keys or Left Stick of controller.
+To rotate view use left/right arrow keys, or Right stick of controller left/right.
+To zoom view in/out use up/down arrow keys, or Right stick of controller up/down.
+To jump press Space Bar or A button of (Xbox) controller.
+To reset the game without reloading the game world from the web, press R
+To reload (update) the game world from the web, press U
+To toggle full-screen press Ctrl-F
+To quit press Alt-F4 on Windows, Cmd-Q on Mac"
 fit_content = true
 
 [node name="ConfigurationContainer" type="VBoxContainer" parent="."]

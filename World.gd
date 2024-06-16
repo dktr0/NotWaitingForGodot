@@ -7,6 +7,7 @@ var configuration = {};
 var playerStartX;
 var playerStartY;
 var playerStartZ;
+var cachedMap = "";
 @onready var worldRequest = $"../WorldRequest";
 @onready var configurationRequest = $"../ConfigurationRequest";
 var gridScale = 2;
@@ -16,6 +17,12 @@ var gridScale = 2;
 func _physics_process(_delta):
 	if Input.is_action_just_pressed("fullscreen"):
 		get_window().mode = Window.MODE_EXCLUSIVE_FULLSCREEN if (!((get_window().mode == Window.MODE_EXCLUSIVE_FULLSCREEN) or (get_window().mode == Window.MODE_FULLSCREEN))) else Window.MODE_WINDOWED;
+	elif Input.is_action_just_pressed("reset"):
+		reset();
+	elif Input.is_action_just_pressed("update"):
+		loadOrUpdate();
+	elif Input.is_action_just_pressed("playerStartHack"):
+		playerToStartPosition();
 
 func googleDocCSV(docID,sheetID):
 	return "https://docs.google.com/spreadsheets/d/" + docID + "/gviz/tq?gid=" + sheetID + "&tqx=out:csv";
@@ -69,16 +76,20 @@ func _receivedWorld(result, response_code, headers, body):
 		ui.setError("error receiving world: " + str(result) + " " + str(response_code)+ " " + str(headers) + " " + str(body));
 	else:
 		ui.setLog("world sheet received");
-		var map = body.get_string_from_utf8();
-		loadCSVMap(map);
-		playerToStartPosition();
-		ui.hide();
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED);
+		cachedMap = body.get_string_from_utf8();
+		reset();
 
+func loadOrUpdate():
+	print("World::loadOrUpdate()");
+	getConfiguration(docID,configID);
+	
 func reset():
 	print("World::reset()");
 	deleteWorld();
-	getConfiguration(docID,configID);
+	loadCSVMap(cachedMap);
+	playerToStartPosition();
+	ui.hide();
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED);
 
 func gameOver():
 	$"../SoundBank".laser();
