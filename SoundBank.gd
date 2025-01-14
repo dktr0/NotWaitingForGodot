@@ -11,4 +11,3 @@ func pickup():
 	
 func win():
 	$win.play();
-
