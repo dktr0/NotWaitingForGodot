@@ -10,7 +10,7 @@ var mouse_sensitivity = 0.05;
 @onready var camera = $"/root/NotWaitingForGodot/Player/Camera3D";
 @onready var world = $"/root/NotWaitingForGodot/World";
 
-var cameraMode = 2; # 1 == first-person, 2 == top-down
+var cameraMode = 1; # 1 == first-person, 2 == top-down
 
 var cameraMode2Zoom = 0.5; # 0-1 where 0 is max zoomed in, 1 is max zoomed out
 

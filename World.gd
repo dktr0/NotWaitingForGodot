@@ -217,6 +217,7 @@ func csvMapCell(x,y,z,cell=""):
 	realizeAspects(aspects);
 		
 func parseCode(code,aspects):
+	print("line 220 code=" + code);
 	if code == "1":
 		aspects["h"] = 1;
 	elif code == "2":
@@ -266,8 +267,10 @@ func parseCode(code,aspects):
 	elif code == "on":
 		aspects["on"] = true;
 	else:
-		parseClass(code,aspects)
+		print("line 269")
+		parseClass(code,aspects);
 		parseCollision(code,aspects);
+		parseTeleport(code,aspects);
 		
 func realizeAspects(aspects={}):
 	if aspects["substance"] == "water":
@@ -309,6 +312,14 @@ func parseCollision(code,aspects):
 		if b != null:
 			# print("parsed collision(off = " + b);
 			aspects["collisionOff"] = b;
+			
+func parseTeleport(code,aspects):
+	print("here");
+	var a = parseFunction("teleport",code);
+	if a != null:
+		print("teleport a=" + a);
+	else:
+		print("teleport null");
 			
 func parseClass(code,aspects):
 	var a = parseFunction("class",code);
