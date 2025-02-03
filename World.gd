@@ -342,19 +342,23 @@ func realizeId(aspects,sb):
 func realizeCollisionOn(aspects,sb):
 	var cOn = aspects.get("collisionon",null);
 	if cOn != null:
-		sb.add_to_group("collisionon_" + cOn);
+		var g = "collisionon_" + cOn;
+		print("adding to group " + g)
+		sb.add_to_group(g);
 
 func realizeCollisionOff(aspects,sb):
 	var cOff = aspects.get("collisionoff",null);
 	if cOff != null:
-		sb.add_to_group("collisionoff_" + cOff);
+		var g = "collisionoff_" + cOff;
+		print("adding to group " + g);
+		sb.add_to_group(g);
 	
 func collisionOn(groupToTurnOn):
-	# print("collisionOn triggered! " + groupToTurnOn);
+	print("collisionOn triggered! " + groupToTurnOn);
 	get_tree().call_group(groupToTurnOn, "turnOn");
 	$"../SoundBank".buttonpush();
 	
 func collisionOff(groupToTurnOff):
-	# print("collisionOff triggered! " + groupToTurnOff);
+	print("collisionOff triggered! " + groupToTurnOff);
 	get_tree().call_group(groupToTurnOff, "turnOff");
 	$"../SoundBank".buttonpush();
