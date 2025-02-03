@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://dnskx06n1r45o"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1"]
-[ext_resource type="PackedScene" uid="uid://d2gc5uvyfcmuh" path="res://models/Crab.glb" id="2_mcd74"]
+[ext_resource type="PackedScene" uid="uid://dtqokilajek4t" path="res://models/Crab.glb" id="2_mcd74"]
 
 [sub_resource type="BoxShape3D" id="1"]
 size = Vector3(1.2, 1.8, 1.2)
@@ -30,4 +30,5 @@ shape = SubResource("2")
 transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
 visible = false
 
+[connection signal="area_entered" from="Area3D" to="." method="_on_area_3d_area_entered"]
 [connection signal="body_entered" from="Area3D" to="." method="_on_Area_body_entered"]

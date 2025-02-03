@@ -31,11 +31,12 @@ func getConfiguration(newDocID,newConfigID):
 	docID = newDocID;
 	configID = newConfigID;
 	configurationRequest.connect("request_completed", Callable(self, "_receivedConfiguration"));
-	var error = configurationRequest.request(googleDocCSV(docID,configID));
+	var url = googleDocCSV(docID,configID);
+	var error = configurationRequest.request(url);
 	if error != OK:
-		ui.setError("error in HTTP request for configuration (possibly bad document or configuration IDs)");
+		ui.setError("error in HTTP request for configuration (possibly bad document or configuration IDs), url=" + url);
 	else:
-		ui.setLog("requesting configuration sheet...");
+		ui.setLog("requesting configuration sheet... url=" + url);
 
 func _receivedConfiguration(result, response_code, headers, body):
 	if result != HTTPRequest.RESULT_SUCCESS:
@@ -50,7 +51,6 @@ func _receivedConfiguration(result, response_code, headers, body):
 		var key = cols[0].substr(1,cols[0].length()-2);	
 		var value = cols[1].substr(1,cols[1].length()-2);
 		configuration[key] = value;
-	# print(str(configuration));
 	playerStartX = float(configuration.get("PlayerStartX",0));
 	playerStartY = float(configuration.get("PlayerStartY",0));
 	playerStartZ = float(configuration.get("PlayerStartZ",0));
@@ -77,6 +77,7 @@ func _receivedWorld(result, response_code, headers, body):
 	else:
 		ui.setLog("world sheet received");
 		cachedMap = body.get_string_from_utf8();
+		print(cachedMap)
 		reset();
 
 func loadOrUpdate():
@@ -120,8 +121,7 @@ func makeGrassStoneWater(aspects):
 		else:
 			sb = factory.instantiate();
 		sb.position = Vector3(x,n,z);
-		realizeClass(aspects,sb);	
-		realizeCollision(aspects,sb);
+		realizeStuff(aspects,sb);
 		add_child(sb);
 	
 func makeABeam(aspects):	
@@ -130,8 +130,7 @@ func makeABeam(aspects):
 	beam.aspects = aspects;
 	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
 	beam.position = Vector3(aspects["x"],y,aspects["z"]);
-	realizeClass(aspects,beam);
-	realizeCollision(aspects,beam);
+	realizeStuff(aspects,beam);
 	add_child(beam);
 	
 func makeADoor(aspects):
@@ -140,8 +139,7 @@ func makeADoor(aspects):
 	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
 	door.position = Vector3(aspects["x"],y,aspects["z"]);
 	door.add_to_group("doors");
-	realizeClass(aspects,door);
-	realizeCollision(aspects,door);
+	realizeStuff(aspects,door);
 	add_child(door);
 	
 func makeAKey(aspects):
@@ -150,8 +148,7 @@ func makeAKey(aspects):
 	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
 	key.position = Vector3(aspects["x"],y,aspects["z"]);
 	key.add_to_group("keys");
-	realizeClass(aspects,key);
-	realizeCollision(aspects,key);
+	realizeStuff(aspects,key);
 	add_child(key);
 
 func makeAnObelisk(aspects):
@@ -159,32 +156,49 @@ func makeAnObelisk(aspects):
 	var o = scene.instantiate();
 	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
 	o.position = Vector3(aspects["x"],y,aspects["z"]);
-	realizeClass(aspects,o);
-	realizeCollision(aspects,o);
+	realizeStuff(aspects,o);
 	add_child(o);
 	
+func makeATeleportTo(aspects):
+	print("makeATeleportTo");
+	var scene = preload("res://teleporter.tscn");
+	var t = scene.instantiate();
+	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
+	t.position = Vector3(aspects["x"],y,aspects["z"]);
+	t.targetID = aspects["teleportto"];
+	t.add_to_group("teleportto");
+	realizeStuff(aspects,t);
+	add_child(t);
+
+func makeATeleportFrom(aspects):
+	print("makeATeleportFrom")
+	var scene = preload("res://teleporter.tscn");
+	var t = scene.instantiate();
+	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
+	t.position = Vector3(aspects["x"],y,aspects["z"]);
+	t.add_to_group("teleportfrom_" + aspects["teleportfrom"]);
+	realizeStuff(aspects,t);
+	add_child(t);
+	
 func movableBlock(aspects):
-	print("movableBlock");
 	var scene = preload("res://MovableCube.tscn");
 	var mc = scene.instantiate();
 	mc.axis_lock_angular_x = true;
 	mc.axis_lock_angular_y = true;
 	mc.axis_lock_angular_z = true;
 	if aspects["movableBlock"]=="xz":
-		print("axis_lock_linear_y");
 		mc.axis_lock_linear_y = true;
 	elif aspects["movableBlock"]=="x":
-		print("axis_lock_linear_y and z");
 		mc.axis_lock_linear_y = true;
 		mc.axis_lock_linear_z = true;
 	elif aspects["movableBlock"]=="z":
-		print("axis_lock_linear_y and x");
 		mc.axis_lock_linear_y = true;
 		mc.axis_lock_linear_x = true;
 	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
 	mc.position = Vector3(aspects["x"],y,aspects["z"]);
 	mc.set_mass(1);
 	mc.set_linear_damp(5); 
+	realizeStuff(aspects,mc);
 	add_child(mc);
 	
 #func loadCSVMapFile(path="res://map.txt"):
@@ -217,7 +231,6 @@ func csvMapCell(x,y,z,cell=""):
 	realizeAspects(aspects);
 		
 func parseCode(code,aspects):
-	print("line 220 code=" + code);
 	if code == "1":
 		aspects["h"] = 1;
 	elif code == "2":
@@ -266,11 +279,12 @@ func parseCode(code,aspects):
 		aspects["on"] = false;
 	elif code == "on":
 		aspects["on"] = true;
-	else:
-		print("line 269")
-		parseClass(code,aspects);
-		parseCollision(code,aspects);
-		parseTeleport(code,aspects);
+	parseSimpleFunction("teleportto",code,aspects);
+	parseSimpleFunction("teleportfrom",code,aspects);
+	parseSimpleFunction("class",code,aspects);
+	parseSimpleFunction("id",code,aspects);
+	parseSimpleFunction("collisionon",code,aspects);
+	parseSimpleFunction("collisionoff",code,aspects);
 		
 func realizeAspects(aspects={}):
 	if aspects["substance"] == "water":
@@ -284,12 +298,15 @@ func realizeAspects(aspects={}):
 	elif aspects.has("key"):
 		makeAKey(aspects);
 	elif aspects.has("movableBlock"):
-		print("here movableBlock")
 		movableBlock(aspects);
 	elif aspects.has("beam"):
 		makeABeam(aspects);
 	elif aspects.has("obelisk"):
 		makeAnObelisk(aspects);
+	elif aspects.has("teleportto"):
+		makeATeleportTo(aspects);
+	elif aspects.has("teleportfrom"):
+		makeATeleportFrom(aspects);
 
 func parseFunction(funcName,code):
 	# if code begins with funcName and an open bracket...
@@ -299,47 +316,38 @@ func parseFunction(funcName,code):
 		return code;
 	else:
 		return null;
-
-func parseCollision(code,aspects):
-	var a = parseFunction("collision",code);
-	if a != null:
-		var b = parseFunction("on",a);
-		if b != null:
-			# print("parsed collision(on = " + b);
-			aspects["collisionOn"] = b;
-			return;
-		b = parseFunction("off",a);
-		if b != null:
-			# print("parsed collision(off = " + b);
-			aspects["collisionOff"] = b;
 			
-func parseTeleport(code,aspects):
-	print("here");
-	var a = parseFunction("teleport",code);
+func parseSimpleFunction(funcName,code,aspects):
+	var a = parseFunction(funcName,code);
 	if a != null:
-		print("teleport a=" + a);
-	else:
-		print("teleport null");
-			
-func parseClass(code,aspects):
-	var a = parseFunction("class",code);
-	if a != null:
-		# print("parsed class = " + a);
-		aspects["class"] = a;
+		print(funcName + "(" + a + ")");
+		aspects[funcName] = a;
 
+func realizeStuff(aspects,sb):
+	realizeClass(aspects,sb);
+	realizeId(aspects,sb);
+	realizeCollisionOn(aspects,sb);
+	realizeCollisionOff(aspects,sb);
+	
 func realizeClass(aspects,sb):
 	var _class = aspects.get("class",null);
 	if _class != null:
 		sb.add_to_group(_class);
-		# print("adding object to group " + _class);
+		
+func realizeId(aspects,sb):
+	var _id = aspects.get("id",null);
+	if _id != null:
+		sb.add_to_group("_id_" + _id);
 
-func realizeCollision(aspects,sb):
-	var cOn = aspects.get("collisionOn",null);
-	var cOff = aspects.get("collisionOff",null);
+func realizeCollisionOn(aspects,sb):
+	var cOn = aspects.get("collisionon",null);
 	if cOn != null:
-		sb.add_to_group("collisionOn_" + cOn);
+		sb.add_to_group("collisionon_" + cOn);
+
+func realizeCollisionOff(aspects,sb):
+	var cOff = aspects.get("collisionoff",null);
 	if cOff != null:
-		sb.add_to_group("collisionOff_" + cOff);
+		sb.add_to_group("collisionoff_" + cOff);
 	
 func collisionOn(groupToTurnOn):
 	# print("collisionOn triggered! " + groupToTurnOn);

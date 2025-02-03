@@ -146,3 +146,18 @@ func _on_Area_body_entered(body):
 		world.collisionOn("laser7");
 	if body.is_in_group("collisionOff_laser7"):
 		world.collisionOff("laser7");
+	if body.is_in_group("teleportto"):
+		var targetID = body.targetID;
+		print("teleporting to " + targetID);
+
+func _on_area_3d_area_entered(area):
+	if area.is_in_group("teleportto"):
+		var targetID = area.targetID;
+		print("teleporting to " + targetID);
+		var nodes = get_tree().get_nodes_in_group("teleportfrom_" + targetID);
+		print("size = " + str(nodes.size()));
+		if nodes[0] != null:
+			print("teleporting to " + targetID);
+			global_position = nodes[0].global_position;
+		else:
+			print("warning no node with correct teleportfrom found to teleport to!");
