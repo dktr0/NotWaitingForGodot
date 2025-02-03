@@ -181,6 +181,7 @@ func makeATeleportFrom(aspects):
 	add_child(t);
 	
 func movableBlock(aspects):
+	print("movableBlock" + str(aspects));
 	var scene = preload("res://MovableCube.tscn");
 	var mc = scene.instantiate();
 	mc.axis_lock_angular_x = true;

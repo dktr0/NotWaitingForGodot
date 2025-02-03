@@ -9,7 +9,7 @@ material = SubResource("StandardMaterial3D_bcu3m")
 [sub_resource type="BoxShape3D" id="BoxShape3D_xg84u"]
 size = Vector3(2, 2, 2)
 
-[node name="MovableCube" type="RigidBody3D"]
+[node name="MovableCube" type="RigidBody3D" groups=["movable"]]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 1, 1, 1)

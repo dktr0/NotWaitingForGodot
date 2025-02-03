@@ -71,6 +71,7 @@ func _physics_process1(delta):
 	velocity.y = fall;
 	set_velocity(velocity);
 	move_and_slide();
+	pushThingsAround();
 	
 func _physics_process2(delta):
 	if global_position.y > -20:
@@ -102,6 +103,9 @@ func _physics_process2(delta):
 	velocity.y = fall;
 	set_velocity(velocity);
 	move_and_slide();
+	pushThingsAround();
+	
+func pushThingsAround():
 	for i in get_slide_collision_count():
 		var c = get_slide_collision(i);
 		if c.get_collider() is RigidBody3D:
@@ -155,8 +159,7 @@ func _on_area_3d_area_entered(area):
 		var targetID = area.targetID;
 		print("teleporting to " + targetID);
 		var nodes = get_tree().get_nodes_in_group("teleportfrom_" + targetID);
-		print("size = " + str(nodes.size()));
-		if nodes[0] != null:
+		if nodes.size() > 0:
 			print("teleporting to " + targetID);
 			global_position = nodes[0].global_position;
 		else:
