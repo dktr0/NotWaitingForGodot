@@ -256,6 +256,8 @@ func parseCode(code,aspects):
 		aspects["substance"] = "stone";
 	elif code == "g":
 		aspects["substance"] = "grass";
+	elif code == "h":
+		aspects["substance"] = "hole";
 	elif code == "obelisk":
 		aspects["obelisk"] = true;
 	elif code == "key":
@@ -292,7 +294,7 @@ func realizeAspects(aspects={}):
 		makeGrassStoneWater(aspects);
 	elif aspects["substance"] == "stone":
 		makeGrassStoneWater(aspects);
-	else: # substance == "grass 
+	elif aspects["substance"] == "grass":
 		makeGrassStoneWater(aspects);
 	if aspects.has("door"):
 		makeADoor(aspects);

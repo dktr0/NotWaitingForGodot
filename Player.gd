@@ -55,6 +55,8 @@ func _physics_process1(delta):
 			fall -= gravity;
 		elif Input.is_action_just_pressed("a_button"):
 			fall = jump;
+	else:
+		fall = 0;
 	var leftStick = Input.get_vector("left_stick_left","left_stick_right","left_stick_up","left_stick_down");
 	var rightStick = Input.get_vector("right_stick_left","right_stick_right","right_stick_up","right_stick_down");
 	rotate_y(-rightStick.x*0.04); 
@@ -79,6 +81,8 @@ func _physics_process2(delta):
 			fall -= gravity;
 		elif Input.is_action_just_pressed("a_button"):
 			fall = jump;
+	else:
+		fall = 0;
 	var leftStick = Input.get_vector("left_stick_left","left_stick_right","left_stick_up","left_stick_down");
 	var rightStick = Input.get_vector("right_stick_left","right_stick_right","right_stick_up","right_stick_down");
 	rotate_y(-rightStick.x*0.04); 
