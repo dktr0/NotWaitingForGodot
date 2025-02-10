@@ -120,7 +120,7 @@ func makeGrassStoneWater(aspects):
 			sb = baseFactory.instantiate();
 		else:
 			sb = factory.instantiate();
-		sb.position = Vector3(x,n,z);
+		sb.position = Vector3(x,n*2,z);
 		realizeStuff(aspects,sb);
 		add_child(sb);
 	
