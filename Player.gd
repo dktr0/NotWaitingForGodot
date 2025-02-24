@@ -25,16 +25,20 @@ func _ready():
 	set_up_direction(Vector3.UP);
 
 func _input(event):	
-	if cameraMode == 1:
-		_inputMode1(event);
+	if world.mode != 2:
+		if cameraMode == 1:
+			_inputMode1(event);
+		else:
+			_inputMode2(event);
 	else:
-		_inputMode2(event);
+		_inputMode1(event);
 
 func _inputMode1(event):
-	if event is InputEventMouseMotion:
-		rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivity)) 
-		camera.rotate_x(deg_to_rad(-event.relative.y * mouse_sensitivity)) 
-		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
+	if world.mode != 2:
+		if event is InputEventMouseMotion:
+			rotate_y(deg_to_rad(-event.relative.x * mouse_sensitivity)) 
+			camera.rotate_x(deg_to_rad(-event.relative.y * mouse_sensitivity)) 
+			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90))
 	if event is InputEventKey and event.keycode == KEY_ESCAPE:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
@@ -54,16 +58,19 @@ func _physics_process1(delta):
 		if not is_on_floor():
 			fall -= gravity;
 		elif Input.is_action_just_pressed("a_button"):
-			fall = jump;
+			fall = jump * world.jump;
 	else:
 		fall = 0;
 	var leftStick = Input.get_vector("left_stick_left","left_stick_right","left_stick_up","left_stick_down");
 	var rightStick = Input.get_vector("right_stick_left","right_stick_right","right_stick_up","right_stick_down");
-	rotate_y(-rightStick.x*0.04); 
-	camera.rotation.x -= rightStick.y * 0.04;
-	camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90));
+	if world.mode != 2:
+		rotate_y(-rightStick.x*0.04); 
+		camera.rotation.x -= rightStick.y * 0.04;
+		camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-90), deg_to_rad(90));
 	var xMove = leftStick.x;
 	var zMove = leftStick.y;
+	if world.mode == 2:
+		zMove = 0;
 	var direction = Vector3(0,0,0);
 	direction += xMove * transform.basis.x;
 	direction += zMove * transform.basis.z;

@@ -7,7 +7,8 @@ var configuration = {};
 var playerStartX;
 var playerStartY;
 var playerStartZ;
-var mode;
+var mode = 2;
+var jump;
 var cachedMap = "";
 @onready var worldRequest = $"../WorldRequest";
 @onready var configurationRequest = $"../ConfigurationRequest";
@@ -56,6 +57,7 @@ func _receivedConfiguration(result, response_code, headers, body):
 	playerStartY = float(configuration.get("PlayerStartY",0));
 	playerStartZ = float(configuration.get("PlayerStartZ",0));
 	mode = int(configuration.get("Mode",0));
+	jump = float(configuration.get("Jump",1));
 	if configuration.has("WorldSheet"):
 		worldID = configuration["WorldSheet"];
 		getWorld(googleDocCSV(docID,worldID));
