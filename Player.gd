@@ -50,7 +50,7 @@ func _physics_process(delta):
 		_physics_process2(delta);
 		
 func _physics_process1(delta):
-	if global_position.y > -20:
+	if global_position.y > -5:
 		if not is_on_floor():
 			fall -= gravity;
 		elif Input.is_action_just_pressed("a_button"):
@@ -76,7 +76,7 @@ func _physics_process1(delta):
 	pushThingsAround();
 	
 func _physics_process2(delta):
-	if global_position.y > -20:
+	if global_position.y > -5:
 		if not is_on_floor():
 			fall -= gravity;
 		elif Input.is_action_just_pressed("a_button"):

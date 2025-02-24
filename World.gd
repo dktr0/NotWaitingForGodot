@@ -7,6 +7,7 @@ var configuration = {};
 var playerStartX;
 var playerStartY;
 var playerStartZ;
+var mode;
 var cachedMap = "";
 @onready var worldRequest = $"../WorldRequest";
 @onready var configurationRequest = $"../ConfigurationRequest";
@@ -54,6 +55,7 @@ func _receivedConfiguration(result, response_code, headers, body):
 	playerStartX = float(configuration.get("PlayerStartX",0));
 	playerStartY = float(configuration.get("PlayerStartY",0));
 	playerStartZ = float(configuration.get("PlayerStartZ",0));
+	mode = int(configuration.get("Mode",0));
 	if configuration.has("WorldSheet"):
 		worldID = configuration["WorldSheet"];
 		getWorld(googleDocCSV(docID,worldID));
@@ -114,13 +116,21 @@ func makeGrassStoneWater(aspects):
 	var y = aspects["y"];
 	var z = aspects["z"];
 	var h = aspects["h"];
-	for n in (h+1):
+	var nn;
+	if mode != 2:
+		nn = h + 1;
+	else:
+		nn = 1;
+	for n in nn:
 		var sb;
 		if n == h && baseFactory != null:
 			sb = baseFactory.instantiate();
 		else:
 			sb = factory.instantiate();
-		sb.position = Vector3(x,n*2,z);
+		if mode != 2:
+			sb.position = Vector3(x,n*2,z);
+		else:
+			sb.position = Vector3(x,y,z);
 		realizeStuff(aspects,sb);
 		add_child(sb);
 	
@@ -212,20 +222,28 @@ func movableBlock(aspects):
 func loadCSVMap(map=""):
 	var rows = map.split("\n");
 	for rowNo in rows.size():
-		csvMapRow(rows[rowNo],rowNo);
+		csvMapRow(rows[rowNo],rowNo,rows.size());
 
-func csvMapRow(row,rowNo):
+func csvMapRow(row,rowNo,nRows):
+	print("csvMapRow rowNo " + str(rowNo));
+	print(" " + str(row));
 	var cells = row.split(",");
 	for cellNo in cells.size():
-		var x = 2.0 * float(cellNo);
-		var y = 0;
-		var z = 2.0 * float(rowNo);
-		csvMapCell(x,y,z,cells[cellNo]);
+		if mode == 2: # side-scroller
+			var x = 2.0 * float(cellNo);
+			var y = (2.0 * nRows - 2.0) - (2.0 * float(rowNo));
+			csvMapCell(x,y,0,cells[cellNo]);		
+		else:
+			var x = 2.0 * float(cellNo);
+			var z = 2.0 * float(rowNo);
+			csvMapCell(x,0,z,cells[cellNo]);
 		
 func csvMapCell(x,y,z,cell=""):
 	cell = cell.to_lower();
 	cell = cell.substr(1,cell.length()-2);	# remove quotation marks at beginning and end of cell
 	var aspects = { "substance": "grass", "h": 0, "x": x, "y": y, "z": z };
+	if mode == 2:
+		aspects.substance = "hole";
 	var codes = cell.split(" ",false);
 	for codeNo in codes.size():
 		parseCode(codes[codeNo],aspects);

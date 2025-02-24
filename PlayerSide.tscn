@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dnskx06n1r45o"]
+[gd_scene load_steps=5 format=3 uid="uid://dmwqjq3uesw6j"]
 
-[ext_resource type="Script" path="res://Player.gd" id="1"]
-[ext_resource type="PackedScene" uid="uid://dtqokilajek4t" path="res://models/Crab.glb" id="2_mcd74"]
+[ext_resource type="Script" path="res://Player.gd" id="1_1ptta"]
+[ext_resource type="PackedScene" uid="uid://dtqokilajek4t" path="res://models/Crab.glb" id="2_42hxd"]
 
 [sub_resource type="BoxShape3D" id="1"]
 size = Vector3(1.2, 1.8, 1.2)
@@ -10,10 +10,10 @@ size = Vector3(1.2, 1.8, 1.2)
 size = Vector3(1.8, 1.8, 1.8)
 
 [node name="Player" type="CharacterBody3D" groups=["Player"]]
-script = ExtResource("1")
+script = ExtResource("1_1ptta")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.22931, 5.26439)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.22931, 0)
 far = 1000.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
@@ -26,8 +26,9 @@ shape = SubResource("1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.83923, 0)
 shape = SubResource("2")
 
-[node name="Crab" parent="." instance=ExtResource("2_mcd74")]
-transform = Transform3D(4.76995e-09, 0, -0.4, 0, 0.4, 0, 0.4, 0, 4.76995e-09, 0, 0, 0)
+[node name="Crab" parent="." instance=ExtResource("2_42hxd")]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
+visible = false
 
 [connection signal="area_entered" from="Area3D" to="." method="_on_area_3d_area_entered"]
 [connection signal="body_entered" from="Area3D" to="." method="_on_Area_body_entered"]
