@@ -148,16 +148,22 @@ func makeABeam(aspects):
 func makeADoor(aspects):
 	var scene = preload("res://models/Door.tscn");
 	var door = scene.instantiate();
-	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
+	var y = yCalc(aspects);
 	door.position = Vector3(aspects["x"],y,aspects["z"]);
 	door.add_to_group("doors");
 	realizeStuff(aspects,door);
 	add_child(door);
 	
+func yCalc(aspects):
+	if mode != 2:
+		return (aspects["y"] + (aspects["h"] * gridScale + gridScale));
+	else:
+		return (aspects["y"]);
+	
 func makeAKey(aspects):
 	var scene = preload("res://models/Key.tscn");
 	var key = scene.instantiate();
-	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
+	var y = yCalc(aspects);
 	key.position = Vector3(aspects["x"],y,aspects["z"]);
 	key.add_to_group("keys");
 	realizeStuff(aspects,key);
@@ -166,7 +172,7 @@ func makeAKey(aspects):
 func makeAnObelisk(aspects):
 	var scene = preload("res://models/Obelisk.tscn");
 	var o = scene.instantiate();
-	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
+	var y = yCalc(aspects);
 	o.position = Vector3(aspects["x"],y,aspects["z"]);
 	realizeStuff(aspects,o);
 	add_child(o);
@@ -175,7 +181,7 @@ func makeATeleportTo(aspects):
 	print("makeATeleportTo");
 	var scene = preload("res://teleporter.tscn");
 	var t = scene.instantiate();
-	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
+	var y = yCalc(aspects);
 	t.position = Vector3(aspects["x"],y,aspects["z"]);
 	t.targetID = aspects["teleportto"];
 	t.add_to_group("teleportto");
@@ -186,7 +192,7 @@ func makeATeleportFrom(aspects):
 	print("makeATeleportFrom")
 	var scene = preload("res://teleporter.tscn");
 	var t = scene.instantiate();
-	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
+	var y = yCalc(aspects);
 	t.position = Vector3(aspects["x"],y,aspects["z"]);
 	t.add_to_group("teleportfrom_" + aspects["teleportfrom"]);
 	realizeStuff(aspects,t);
@@ -207,7 +213,7 @@ func movableBlock(aspects):
 	elif aspects["movableBlock"]=="z":
 		mc.axis_lock_linear_y = true;
 		mc.axis_lock_linear_x = true;
-	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
+	var y = yCalc(aspects);
 	mc.position = Vector3(aspects["x"],y,aspects["z"]);
 	mc.set_mass(1);
 	mc.set_linear_damp(5); 
