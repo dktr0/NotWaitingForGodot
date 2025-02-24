@@ -9,6 +9,9 @@ var playerStartY;
 var playerStartZ;
 var mode = 2;
 var jump;
+var cameraX;
+var cameraY;
+var cameraZ;
 var cachedMap = "";
 @onready var worldRequest = $"../WorldRequest";
 @onready var configurationRequest = $"../ConfigurationRequest";
@@ -58,6 +61,11 @@ func _receivedConfiguration(result, response_code, headers, body):
 	playerStartZ = float(configuration.get("PlayerStartZ",0));
 	mode = int(configuration.get("Mode",0));
 	jump = float(configuration.get("Jump",1));
+	cameraX = float(configuration.get("CameraX",0));
+	cameraY = float(configuration.get("CameraY",1));
+	cameraZ = float(configuration.get("CameraZ",12));
+	player.positionCamera(cameraX,cameraY,cameraZ);
+	
 	if configuration.has("WorldSheet"):
 		worldID = configuration["WorldSheet"];
 		getWorld(googleDocCSV(docID,worldID));
@@ -140,7 +148,7 @@ func makeABeam(aspects):
 	var scene = preload("res://Beam.tscn");
 	var beam = scene.instantiate();
 	beam.aspects = aspects;
-	var y = aspects["y"] + (aspects["h"] * gridScale + gridScale);
+	var y = yCalc(aspects);
 	beam.position = Vector3(aspects["x"],y,aspects["z"]);
 	realizeStuff(aspects,beam);
 	add_child(beam);

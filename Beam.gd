@@ -3,6 +3,7 @@ extends StaticBody3D
 @onready var rayCast = $RayCast3D;
 @onready var rayMesh = $RayMesh;
 
+@onready var world = $"/root/NotWaitingForGodot/World";
 var beamDirection = null;
 var on = true;
 var _class = null;
@@ -32,13 +33,24 @@ func _ready():
 	
 func scaleAndCast(d=50):
 	if beamDirection == "down":
-		rayCast.target_position = Vector3(0,0,d);
-		rayMesh.set_scale(Vector3(0.1,0.1,d));
-		rayMesh.set_position(Vector3(1,1,d/2.0));
+		if world.mode != 2:
+			rayCast.target_position = Vector3(0,0,d);
+			rayMesh.set_scale(Vector3(0.1,0.1,d));
+			rayMesh.set_position(Vector3(1,1,d/2.0));
+		else:
+			# ????
+			rayCast.target_position = Vector3(0,d*(-1),0);
+			rayMesh.set_scale(Vector3(0.1,d,0.1));
+			rayMesh.set_position(Vector3(1,(d*-1)/2.0,1));
 	elif beamDirection == "up":
-		rayCast.target_position = Vector3(0,0,d*(-1));
-		rayMesh.set_scale(Vector3(0.1,0.1,d));
-		rayMesh.set_position(Vector3(1,1,(d*-1)/2.0));
+		if world.mode != 2:
+			rayCast.target_position = Vector3(0,0,d*(-1));
+			rayMesh.set_scale(Vector3(0.1,0.1,d));
+			rayMesh.set_position(Vector3(1,1,(d*-1)/2.0));
+		else:
+			rayCast.target_position = Vector3(0,d,0);
+			rayMesh.set_scale(Vector3(0.1,d,0.1));
+			rayMesh.set_position(Vector3(1,d/2.0,1));
 	elif beamDirection == "left":
 		rayCast.target_position = Vector3(d*(-1),0,0);
 		rayMesh.set_scale(Vector3(d,0.1,0.1));

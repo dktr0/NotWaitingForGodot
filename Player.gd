@@ -16,6 +16,10 @@ var cameraMode2Zoom = 0.5; # 0-1 where 0 is max zoomed in, 1 is max zoomed out
 
 var keys = 0;
 
+func positionCamera(x : float ,y : float, z : float):
+	print("position camera " + str(x) + " " + str(y) + " " + str(z));
+	$Camera3D.position = Vector3(x,y,z);
+
 func playerStart(x=0,y=0,z=0):
 	print("changing player start " + str(x) + " " + str(y) + " " + str(z));
 	global_position = Vector3(x,y,z);
