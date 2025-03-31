@@ -16,7 +16,10 @@ var cameraMode2Zoom = 0.5; # 0-1 where 0 is max zoomed in, 1 is max zoomed out
 
 var keys = 0;
 
-var frozen = false;
+var frozen = true;
+
+func start():
+	frozen = false;
 
 func positionCamera(x : float ,y : float, z : float):
 	print("position camera " + str(x) + " " + str(y) + " " + str(z));
@@ -55,6 +58,8 @@ func _inputMode2(_event):
 
 func _physics_process(delta):
 	if !frozen:
+		if global_position.y < -4:
+			fail();
 		if cameraMode == 1:
 			_physics_process1(delta);
 		else:
