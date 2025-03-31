@@ -16,6 +16,8 @@ var cameraMode2Zoom = 0.5; # 0-1 where 0 is max zoomed in, 1 is max zoomed out
 
 var keys = 0;
 
+var frozen = false;
+
 func positionCamera(x : float ,y : float, z : float):
 	print("position camera " + str(x) + " " + str(y) + " " + str(z));
 	$Camera3D.position = Vector3(x,y,z);
@@ -52,10 +54,11 @@ func _inputMode2(_event):
 	pass
 
 func _physics_process(delta):
-	if cameraMode == 1:
-		_physics_process1(delta);
-	else:
-		_physics_process2(delta);
+	if !frozen:
+		if cameraMode == 1:
+			_physics_process1(delta);
+		else:
+			_physics_process2(delta);
 		
 func _physics_process1(delta):
 	if global_position.y > -5:
@@ -168,7 +171,11 @@ func _on_Area_body_entered(body):
 	if body.is_in_group("teleportto"):
 		var targetID = body.targetID;
 		print("teleporting to " + targetID);
-
+	if body.is_in_group("_fail"):
+		fail();
+	if body.is_in_group("_win"):
+		win();
+		
 func _on_area_3d_area_entered(area):
 	if area.is_in_group("teleportto"):
 		var targetID = area.targetID;
@@ -179,3 +186,11 @@ func _on_area_3d_area_entered(area):
 			global_position = nodes[0].global_position;
 		else:
 			print("warning no node with correct teleportfrom found to teleport to!");
+			
+func fail():
+	frozen = true;
+	$"../Fail".run();
+	
+func win():
+	frozen = true;
+	$"../Win".run();

@@ -1,9 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://chjkh4ohuant6"]
+[gd_scene load_steps=10 format=3 uid="uid://chjkh4ohuant6"]
 
 [ext_resource type="PackedScene" uid="uid://dnskx06n1r45o" path="res://Player.tscn" id="1"]
 [ext_resource type="Script" path="res://World.gd" id="3"]
 [ext_resource type="PackedScene" uid="uid://c51g3lkakyde7" path="res://title_ui.tscn" id="3_3codd"]
 [ext_resource type="PackedScene" uid="uid://cnp3w7uug8uj8" path="res://SoundBank.tscn" id="4_fwvrp"]
+[ext_resource type="PackedScene" uid="uid://02ctknjgpfwa" path="res://win.tscn" id="5_o7e1b"]
+[ext_resource type="PackedScene" uid="uid://dn8tpswxhpeyl" path="res://fail.tscn" id="6_npwvp"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_tqj0p"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -39,3 +41,9 @@ script = ExtResource("3")
 [node name="SoundBank" parent="." instance=ExtResource("4_fwvrp")]
 
 [node name="Player" parent="." instance=ExtResource("1")]
+
+[node name="Win" parent="." instance=ExtResource("5_o7e1b")]
+visible = false
+
+[node name="Fail" parent="." instance=ExtResource("6_npwvp")]
+visible = false

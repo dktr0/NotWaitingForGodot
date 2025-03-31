@@ -97,6 +97,7 @@ func loadOrUpdate():
 	getConfiguration(docID,configID);
 	
 func reset():
+	$"../Player".frozen = false;
 	print("World::reset()");
 	deleteWorld();
 	loadCSVMap(cachedMap);
@@ -316,6 +317,10 @@ func parseCode(code,aspects):
 		aspects["on"] = false;
 	elif code == "on":
 		aspects["on"] = true;
+	elif code == "fail":
+		aspects["fail"] = true;
+	elif code == "win":
+		aspects["win"] = true;
 	parseSimpleFunction("teleportto",code,aspects);
 	parseSimpleFunction("teleportfrom",code,aspects);
 	parseSimpleFunction("class",code,aspects);
@@ -324,25 +329,27 @@ func parseCode(code,aspects):
 	parseSimpleFunction("collisionoff",code,aspects);
 		
 func realizeAspects(aspects={}):
+	# create basic terrain
 	if aspects["substance"] == "water":
 		makeGrassStoneWater(aspects);
 	elif aspects["substance"] == "stone":
 		makeGrassStoneWater(aspects);
 	elif aspects["substance"] == "grass":
 		makeGrassStoneWater(aspects);
+	# add further aspects to that terrain
 	if aspects.has("door"):
 		makeADoor(aspects);
-	elif aspects.has("key"):
+	if aspects.has("key"):
 		makeAKey(aspects);
-	elif aspects.has("movableBlock"):
+	if aspects.has("movableBlock"):
 		movableBlock(aspects);
-	elif aspects.has("beam"):
+	if aspects.has("beam"):
 		makeABeam(aspects);
-	elif aspects.has("obelisk"):
+	if aspects.has("obelisk"):
 		makeAnObelisk(aspects);
-	elif aspects.has("teleportto"):
+	if aspects.has("teleportto"):
 		makeATeleportTo(aspects);
-	elif aspects.has("teleportfrom"):
+	if aspects.has("teleportfrom"):
 		makeATeleportFrom(aspects);
 
 func parseFunction(funcName,code):
@@ -365,6 +372,8 @@ func realizeStuff(aspects,sb):
 	realizeId(aspects,sb);
 	realizeCollisionOn(aspects,sb);
 	realizeCollisionOff(aspects,sb);
+	realizeFail(aspects,sb);
+	realizeWin(aspects,sb);
 	
 func realizeClass(aspects,sb):
 	var _class = aspects.get("class",null);
@@ -375,6 +384,16 @@ func realizeId(aspects,sb):
 	var _id = aspects.get("id",null);
 	if _id != null:
 		sb.add_to_group("_id_" + _id);
+
+func realizeFail(aspects,sb):
+	var x = aspects.get("fail",null);
+	if x != null:
+		sb.add_to_group("_fail");
+
+func realizeWin(aspects,sb):
+	var x = aspects.get("win",null);
+	if x != null:
+		sb.add_to_group("_win");
 
 func realizeCollisionOn(aspects,sb):
 	var cOn = aspects.get("collisionon",null);
