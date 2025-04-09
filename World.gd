@@ -3,6 +3,7 @@ extends Node3D
 var docID;
 var configID;
 var worldID;
+var worldURL;
 var configuration = {};
 var playerStartX;
 var playerStartY;
@@ -13,11 +14,14 @@ var cameraX;
 var cameraY;
 var cameraZ;
 var cachedMap = "";
-@onready var worldRequest = $"../WorldRequest";
 @onready var configurationRequest = $"../ConfigurationRequest";
+@onready var worldRequest = $"../WorldRequest";
+@onready var worldRequest_Update = $"../WorldRequest_Update";
 var gridScale = 2;
 @onready var ui = $"../TitleUI";
 @onready var player = $"/root/NotWaitingForGodot/Player";
+var activeWorldMatrix;
+var autoUpdateInterval;
 
 func _physics_process(_delta):
 	if Input.is_action_just_pressed("fullscreen"):
@@ -25,7 +29,7 @@ func _physics_process(_delta):
 	elif Input.is_action_just_pressed("reset"):
 		reset();
 	elif Input.is_action_just_pressed("update"):
-		loadOrUpdate();
+		getWorld_Update();
 	elif Input.is_action_just_pressed("playerStartHack"):
 		playerToStartPosition();
 
@@ -66,9 +70,17 @@ func _receivedConfiguration(result, response_code, headers, body):
 	cameraZ = float(configuration.get("CameraZ",12));
 	player.positionCamera(cameraX,cameraY,cameraZ);
 	
+	autoUpdateInterval = configuration.get("AutoUpdateInterval",null);
+	if autoUpdateInterval != null:
+		autoUpdateInterval = float(autoUpdateInterval);
+		print("starting auto update, interval = " + str(autoUpdateInterval));
+		$"../AutoUpdateTimer".set_wait_time(autoUpdateInterval);
+		$"../AutoUpdateTimer".start();
+	
 	if configuration.has("WorldSheet"):
 		worldID = configuration["WorldSheet"];
-		getWorld(googleDocCSV(docID,worldID));
+		worldURL = googleDocCSV(docID,worldID);
+		getWorld(worldURL);
 	else:
 		ui.setError("no WorldSheet ID found in configuration (possibly problem in configuration sheet, possibly bad IDs above)");
 	
@@ -84,27 +96,47 @@ func getWorld(url):
 		ui.setLog("requesting world sheet...");
 	
 func _receivedWorld(result, response_code, headers, body):
+	print("_receivedWorld");
 	if result != HTTPRequest.RESULT_SUCCESS:
 		ui.setError("error receiving world: " + str(result) + " " + str(response_code)+ " " + str(headers) + " " + str(body));
 	else:
 		ui.setLog("world sheet received");
 		cachedMap = body.get_string_from_utf8();
-		print(cachedMap)
 		reset();
 
-func loadOrUpdate():
-	print("World::loadOrUpdate()");
+func getWorld_Update():
+	worldRequest_Update.connect("request_completed", Callable(self, "_receivedWorld_Update"));
+	var error = worldRequest_Update.request(worldURL);
+	if error != OK:
+		ui.setError("error in HTTP request for world (possibly bad world sheet ID in configuration sheet)");
+	else:
+		ui.setLog("requesting world sheet...");
+	
+func _receivedWorld_Update(result, response_code, headers, body):
+	print("_receivedWorld_Update")
+	if result != HTTPRequest.RESULT_SUCCESS:
+		ui.setError("error receiving world: " + str(result) + " " + str(response_code)+ " " + str(headers) + " " + str(body));
+	else:
+		ui.setLog("world sheet received");
+		cachedMap = body.get_string_from_utf8();
+		update();
+		
+func launch():
+	print("World::launch()");
 	getConfiguration(docID,configID);
 	
 func reset():
-	$"../Player".frozen = false;
 	print("World::reset()");
-	deleteWorld();
-	loadCSVMap(cachedMap);
+	$"../Player".frozen = false;
+	updateCSV(cachedMap);
 	playerToStartPosition();
 	ui.hide();
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED);
-
+	
+func update():
+	print("World::update()");
+	updateCSV(cachedMap);
+	
 func gameOver():
 	$"../SoundBank".laser();
 	reset();
@@ -112,6 +144,13 @@ func gameOver():
 func deleteWorld():
 	for i in range(0, get_child_count()):
 		get_child(i).queue_free()
+		
+func makeHole(aspects):
+	var node3D = Node3D.new();	
+	node3D.set_global_position(Vector3(aspects.x,aspects.y,aspects.z));
+	aspects.node3D = node3D;
+	add_child(node3D);
+	return aspects;
 
 func makeGrassStoneWater(aspects):
 	var factory;
@@ -132,6 +171,8 @@ func makeGrassStoneWater(aspects):
 		nn = h + 1;
 	else:
 		nn = 1;
+	var node3D = Node3D.new();	
+	node3D.set_global_position(Vector3(aspects.x,aspects.y,aspects.z));
 	for n in nn:
 		var sb;
 		if n == h && baseFactory != null:
@@ -139,11 +180,14 @@ func makeGrassStoneWater(aspects):
 		else:
 			sb = factory.instantiate();
 		if mode != 2:
-			sb.position = Vector3(x,n*2,z);
+			sb.position = Vector3(0,n*2,0);
 		else:
-			sb.position = Vector3(x,y,z);
+			sb.position = Vector3(0,0,0);
 		realizeStuff(aspects,sb);
-		add_child(sb);
+		node3D.add_child(sb);
+	aspects.node3D = node3D;
+	add_child(node3D);
+	return aspects;
 	
 func makeABeam(aspects):	
 	var scene = preload("res://Beam.tscn");
@@ -152,7 +196,7 @@ func makeABeam(aspects):
 	var y = yCalc(aspects);
 	beam.position = Vector3(aspects["x"],y,aspects["z"]);
 	realizeStuff(aspects,beam);
-	add_child(beam);
+	aspects.node3D.add_child(beam);
 	
 func makeADoor(aspects):
 	var scene = preload("res://models/Door.tscn");
@@ -161,7 +205,7 @@ func makeADoor(aspects):
 	door.position = Vector3(aspects["x"],y,aspects["z"]);
 	door.add_to_group("doors");
 	realizeStuff(aspects,door);
-	add_child(door);
+	aspects.node3D.add_child(door);
 	
 func yCalc(aspects):
 	if mode != 2:
@@ -176,7 +220,7 @@ func makeAKey(aspects):
 	key.position = Vector3(aspects["x"],y,aspects["z"]);
 	key.add_to_group("keys");
 	realizeStuff(aspects,key);
-	add_child(key);
+	aspects.node3D.add_child(key);
 
 func makeAnObelisk(aspects):
 	var scene = preload("res://models/Obelisk.tscn");
@@ -184,7 +228,7 @@ func makeAnObelisk(aspects):
 	var y = yCalc(aspects);
 	o.position = Vector3(aspects["x"],y,aspects["z"]);
 	realizeStuff(aspects,o);
-	add_child(o);
+	aspects.node3D.add_child(o);
 	
 func makeATeleportTo(aspects):
 	print("makeATeleportTo");
@@ -195,7 +239,7 @@ func makeATeleportTo(aspects):
 	t.targetID = aspects["teleportto"];
 	t.add_to_group("teleportto");
 	realizeStuff(aspects,t);
-	add_child(t);
+	aspects.node3D.add_child(t);
 
 func makeATeleportFrom(aspects):
 	print("makeATeleportFrom")
@@ -205,7 +249,7 @@ func makeATeleportFrom(aspects):
 	t.position = Vector3(aspects["x"],y,aspects["z"]);
 	t.add_to_group("teleportfrom_" + aspects["teleportfrom"]);
 	realizeStuff(aspects,t);
-	add_child(t);
+	aspects.node3D.add_child(t);
 	
 func movableBlock(aspects):
 	print("movableBlock" + str(aspects));
@@ -227,44 +271,115 @@ func movableBlock(aspects):
 	mc.set_mass(1);
 	mc.set_linear_damp(5); 
 	realizeStuff(aspects,mc);
-	add_child(mc);
+	aspects.node3D.add_child(mc);
 	
 #func loadCSVMapFile(path="res://map.txt"):
 #	print("loading CSV map called " + path);
 #	var file = File.new();
 #	file.open(path, File.READ);
 #	var map = file.get_as_text();
-#	loadCSVMap(map);
-	
-func loadCSVMap(map=""):
-	var rows = map.split("\n");
-	for rowNo in rows.size():
-		csvMapRow(rows[rowNo],rowNo,rows.size());
+#	updateCSV(map);
 
-func csvMapRow(row,rowNo,nRows):
-	print("csvMapRow rowNo " + str(rowNo));
-	print(" " + str(row));
-	var cells = row.split(",");
-	for cellNo in cells.size():
-		if mode == 2: # side-scroller
-			var x = 2.0 * float(cellNo);
-			var y = (2.0 * nRows - 2.0) - (2.0 * float(rowNo));
-			csvMapCell(x,y,0,cells[cellNo]);		
-		else:
-			var x = 2.0 * float(cellNo);
-			var z = 2.0 * float(rowNo);
-			csvMapCell(x,0,z,cells[cellNo]);
 		
-func csvMapCell(x,y,z,cell=""):
-	cell = cell.to_lower();
-	cell = cell.substr(1,cell.length()-2);	# remove quotation marks at beginning and end of cell
-	var aspects = { "substance": "grass", "h": 0, "x": x, "y": y, "z": z };
+func updateCSV(csv=""):
+	var prevWorldMatrix = activeWorldMatrix;
+	var prevMatrixRows;
+	if prevWorldMatrix != null:
+		print("there is a previous world matrix");
+		prevMatrixRows = prevWorldMatrix.size();
+	else:
+		print("there is NO previous world matrix")
+		prevMatrixRows = 0;
+	activeWorldMatrix = csvToWorldMatrix(csv);
+	var activeMatrixRows = activeWorldMatrix.size();
+	var nRows = max(prevMatrixRows,activeMatrixRows);
+	$"../Player".yFailThreshold = nRows * (-2.0) - 10.0;
+	for rowIndex in nRows:
+		if rowIndex >= prevMatrixRows:
+			updateRow(null,activeWorldMatrix[rowIndex]);
+		elif rowIndex >= activeMatrixRows:
+			updateRow(prevWorldMatrix[rowIndex],null);
+		else:
+			updateRow(prevWorldMatrix[rowIndex],activeWorldMatrix[rowIndex]);
+	
+func csvToWorldMatrix(csv):
+	var matrix = Array();
+	var csvRows = csv.split("\n");
+	for rowIndex in csvRows.size():
+		var matrixRow = Array();
+		var csvCells = csvRows[rowIndex].split(",");
+		for columnIndex in csvCells.size():
+			var matrixCell = { "rowIndex": rowIndex, "columnIndex": columnIndex, "def": csvCells[columnIndex] };
+			matrixRow.append(matrixCell);
+		matrix.append(matrixRow);
+	return matrix;
+
+func updateRow(prevRow,newRow):
+	if prevRow == null: # just realize new row in world
+		var nColumns = newRow.size();
+		for columnIndex in nColumns:
+			updateCell(null,newRow[columnIndex]);
+	elif newRow == null: # just delete previous row in world
+		var nColumns = prevRow.size();
+		for columnIndex in nColumns:
+			deleteCell(prevRow[columnIndex]);
+	else: # iterate over previous and new cells
+		var prevRowColumns = prevRow.size();
+		var newRowColumns = newRow.size();
+		var nColumns = max(prevRowColumns,newRowColumns);	
+		for columnIndex in nColumns:
+			if columnIndex >= prevRowColumns:
+				updateCell(null,newRow[columnIndex]);
+			elif columnIndex >= newRowColumns:
+				updateCell(prevRow[columnIndex],null);
+			else:
+				updateCell(prevRow[columnIndex],newRow[columnIndex]);
+
+func updateCell(prevCell,newCell):
+	if prevCell == null: # just creating cell from def in newCell
+		return realizeCell(newCell);
+	elif prevCell.def == newCell.def: # no change in definitions, nothing
+		pass
+	else:
+		print("cell definition changed at " + str(prevCell.columnIndex) + "," + str(prevCell.rowIndex)); 
+		deleteCell(prevCell);
+		return realizeCell(newCell);
+	
+func deleteCell(cell):
+	var x = cell.get("node3D",null);
+	if x != null:
+		x.queue_free();
+	else:
+		print("strange error, delete cell couldn't find node3D")
+		print(str(cell))
+		
+func realizeCell(cell):
+	var x;
+	var y;
+	var z;
+	if mode == 2: # side-scroller
+		x = 2.0 * cell["columnIndex"];
+		y = -2.0 * cell["rowIndex"]; # TODO: upside-down
+		z = 0.0;
+	else:
+		x = 2.0 * cell["columnIndex"];
+		y = 0.0;
+		z = 2.0 * cell["rowIndex"];
+	cell.x = x;
+	cell.y = y;
+	cell.z = z;
+	var def = cell["def"].to_lower();
+	def = def.substr(1,def.length()-2); # remove quotation marks at beginning and end of cell def
 	if mode == 2:
-		aspects.substance = "hole";
-	var codes = cell.split(" ",false);
+		cell.substance = "hole";
+	else:
+		cell.substance = "grass";
+	cell.h = 0;
+	var codes = def.split(" ",false);
 	for codeNo in codes.size():
-		parseCode(codes[codeNo],aspects);
-	realizeAspects(aspects);
+		parseCode(codes[codeNo],cell);
+	cell = realizeAspects(cell);
+	return cell;
 		
 func parseCode(code,aspects):
 	if code == "1":
@@ -328,14 +443,16 @@ func parseCode(code,aspects):
 	parseSimpleFunction("collisionon",code,aspects);
 	parseSimpleFunction("collisionoff",code,aspects);
 		
-func realizeAspects(aspects={}):
+func realizeAspects(aspects):
 	# create basic terrain
 	if aspects["substance"] == "water":
-		makeGrassStoneWater(aspects);
+		aspects = makeGrassStoneWater(aspects);
 	elif aspects["substance"] == "stone":
-		makeGrassStoneWater(aspects);
+		aspects = makeGrassStoneWater(aspects);
 	elif aspects["substance"] == "grass":
-		makeGrassStoneWater(aspects);
+		aspects = makeGrassStoneWater(aspects);
+	else:
+		aspects = makeHole(aspects);
 	# add further aspects to that terrain
 	if aspects.has("door"):
 		makeADoor(aspects);
@@ -351,6 +468,7 @@ func realizeAspects(aspects={}):
 		makeATeleportTo(aspects);
 	if aspects.has("teleportfrom"):
 		makeATeleportFrom(aspects);
+	return aspects;
 
 func parseFunction(funcName,code):
 	# if code begins with funcName and an open bracket...
@@ -418,3 +536,7 @@ func collisionOff(groupToTurnOff):
 	print("collisionOff triggered! " + groupToTurnOff);
 	get_tree().call_group(groupToTurnOff, "turnOff");
 	$"../SoundBank".buttonpush();
+
+func _on_auto_update_timer_timeout():
+	print("autoupdate");
+	getWorld_Update();
