@@ -296,11 +296,13 @@ func updateCSV(csv=""):
 	$"../Player".yFailThreshold = nRows * (-2.0) - 10.0;
 	for rowIndex in nRows:
 		if rowIndex >= prevMatrixRows:
-			updateRow(null,activeWorldMatrix[rowIndex]);
+			var r = updateRow(null,activeWorldMatrix[rowIndex]);
+			activeWorldMatrix[rowIndex] = r;
 		elif rowIndex >= activeMatrixRows:
-			updateRow(prevWorldMatrix[rowIndex],null);
+			deleteRow(prevWorldMatrix[rowIndex]);
 		else:
-			updateRow(prevWorldMatrix[rowIndex],activeWorldMatrix[rowIndex]);
+			var r = updateRow(prevWorldMatrix[rowIndex],activeWorldMatrix[rowIndex]);
+			activeWorldMatrix[rowIndex] = r;
 	
 func csvToWorldMatrix(csv):
 	var matrix = Array();
@@ -318,28 +320,35 @@ func updateRow(prevRow,newRow):
 	if prevRow == null: # just realize new row in world
 		var nColumns = newRow.size();
 		for columnIndex in nColumns:
-			updateCell(null,newRow[columnIndex]);
-	elif newRow == null: # just delete previous row in world
-		var nColumns = prevRow.size();
-		for columnIndex in nColumns:
-			deleteCell(prevRow[columnIndex]);
-	else: # iterate over previous and new cells
+			var c = updateCell(null,newRow[columnIndex]);
+			newRow[columnIndex] = c;
+	elif newRow != null: # iterate over previous and new cells
 		var prevRowColumns = prevRow.size();
 		var newRowColumns = newRow.size();
 		var nColumns = max(prevRowColumns,newRowColumns);	
 		for columnIndex in nColumns:
 			if columnIndex >= prevRowColumns:
-				updateCell(null,newRow[columnIndex]);
+				var c = updateCell(null,newRow[columnIndex]);
+				newRow[columnIndex] = c;
 			elif columnIndex >= newRowColumns:
-				updateCell(prevRow[columnIndex],null);
+				deleteCell(prevRow[columnIndex]);
 			else:
-				updateCell(prevRow[columnIndex],newRow[columnIndex]);
-
+				var c = updateCell(prevRow[columnIndex],newRow[columnIndex]);
+				newRow[columnIndex] = c;
+	else:
+		print("strange error in World::updateRow");
+	return newRow;
+				
+func deleteRow(row):
+	var nColumns = row.size();
+	for columnIndex in nColumns:
+		deleteCell(row[columnIndex]);
+		
 func updateCell(prevCell,newCell):
 	if prevCell == null: # just creating cell from def in newCell
 		return realizeCell(newCell);
 	elif prevCell.def == newCell.def: # no change in definitions, nothing
-		pass
+		return prevCell
 	else:
 		print("cell definition changed at " + str(prevCell.columnIndex) + "," + str(prevCell.rowIndex)); 
 		deleteCell(prevCell);
