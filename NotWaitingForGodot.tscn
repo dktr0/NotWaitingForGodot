@@ -38,6 +38,8 @@ script = ExtResource("3")
 
 [node name="WorldRequest" type="HTTPRequest" parent="."]
 
+[node name="WorldRequest_Update" type="HTTPRequest" parent="."]
+
 [node name="SoundBank" parent="." instance=ExtResource("4_fwvrp")]
 
 [node name="Player" parent="." instance=ExtResource("1")]
@@ -47,3 +49,7 @@ visible = false
 
 [node name="Fail" parent="." instance=ExtResource("6_npwvp")]
 visible = false
+
+[node name="AutoUpdateTimer" type="Timer" parent="."]
+
+[connection signal="timeout" from="AutoUpdateTimer" to="World" method="_on_auto_update_timer_timeout"]

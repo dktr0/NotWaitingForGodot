@@ -6,6 +6,7 @@ var acceleration = 6;
 var gravity = 1;
 var jump = 18;
 var mouse_sensitivity = 0.05;
+var yFailThreshold = -9999999;
 
 @onready var camera = $"/root/NotWaitingForGodot/Player/Camera3D";
 @onready var world = $"/root/NotWaitingForGodot/World";
@@ -58,7 +59,7 @@ func _inputMode2(_event):
 
 func _physics_process(delta):
 	if !frozen:
-		if global_position.y < -4:
+		if global_position.y < yFailThreshold:
 			fail();
 		if cameraMode == 1:
 			_physics_process1(delta);
@@ -66,11 +67,10 @@ func _physics_process(delta):
 			_physics_process2(delta);
 		
 func _physics_process1(delta):
-	if global_position.y > -5:
-		if not is_on_floor():
-			fall -= gravity;
-		elif Input.is_action_just_pressed("a_button"):
-			fall = jump * world.jump;
+	if not is_on_floor():
+		fall -= gravity;
+	elif Input.is_action_just_pressed("a_button"):
+		fall = jump * world.jump;
 	else:
 		fall = 0;
 	var leftStick = Input.get_vector("left_stick_left","left_stick_right","left_stick_up","left_stick_down");
