@@ -29,7 +29,8 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Not Waiting For Godot
 
-Contributors: Leo Jatuweerapong, Jack Le Tran, Nadia Lofaro, David Ogborn
+Contributors: Dylan Callaghan, Amanda Dam, Leo Jatuweerapong, Jack Le Tran, 
+Nadia Lofaro, Tram Nguyen, David Ogborn, Nathan Powell, Bihan Sun
 
 Built on top of the Godot game engine. All project-specific code and assets (ie. not the Godot engine itself) is released Creative Commons 0 (CC0, public domain).
 
