@@ -232,11 +232,20 @@ func makeAKey(aspects):
 func makeAnObelisk(aspects):
 	var scene = preload("res://models/Obelisk.tscn");
 	var o = scene.instantiate();
-	#var y = yCalc(aspects);
-	#o.position = Vector3(aspects["x"],y,aspects["z"]);
-	o.position = getObjectOnTopPosition(aspects);
-	realizeStuff(aspects,o);
-	aspects.node3D.add_child(o);
+	if mode != 2:
+		var y = yCalc(aspects);
+		o.position = Vector3(aspects["x"],y,aspects["z"]);
+		o.position = getObjectOnTopPosition(aspects);
+		realizeStuff(aspects,o);
+		aspects.node3D.add_child(o);
+	else:
+		var x = aspects["x"];
+		var y = aspects["y"];
+		var z = aspects["z"];
+		print("making mode 2 obelisk at " + str(x) + " " + str(y) + " " + str(z));
+		o.position = Vector3(x,y,z);
+		aspects.node3D = o;
+		add_child(o);
 
 func getObjectOnTopPosition(aspects):
 	var x = aspects["x"];
