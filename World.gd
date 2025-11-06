@@ -8,6 +8,7 @@ var configuration = {};
 var playerStartX;
 var playerStartY;
 var playerStartZ;
+var playerGravity;
 var mode = 2;
 var jump;
 var cameraX;
@@ -68,6 +69,8 @@ func _receivedConfiguration(result, response_code, headers, body):
 	cameraX = float(configuration.get("CameraX",0));
 	cameraY = float(configuration.get("CameraY",1));
 	cameraZ = float(configuration.get("CameraZ",12));
+	playerGravity = float(configuration.get("PlayerGravity",1));
+	player.gravity = playerGravity;
 	player.positionCamera(cameraX,cameraY,cameraZ);
 	
 	autoUpdateInterval = configuration.get("AutoUpdateInterval",null);
@@ -123,6 +126,7 @@ func _receivedWorld_Update(result, response_code, headers, body):
 		
 func launch():
 	print("World::launch()");
+	$Player.set_gravity_scale(0.1);
 	getConfiguration(docID,configID);
 	
 func reset():
@@ -451,6 +455,7 @@ func parseCode(code,aspects):
 	parseSimpleFunction("id",code,aspects);
 	parseSimpleFunction("collisionon",code,aspects);
 	parseSimpleFunction("collisionoff",code,aspects);
+	parseSimpleFunction("gravity",code,aspects);
 		
 func realizeAspects(aspects):
 	# create basic terrain
@@ -501,6 +506,7 @@ func realizeStuff(aspects,sb):
 	realizeCollisionOff(aspects,sb);
 	realizeFail(aspects,sb);
 	realizeWin(aspects,sb);
+	realizeGravity(aspects,sb);
 	
 func realizeClass(aspects,sb):
 	var _class = aspects.get("class",null);
@@ -521,6 +527,11 @@ func realizeWin(aspects,sb):
 	var x = aspects.get("win",null);
 	if x != null:
 		sb.add_to_group("_win");
+		
+func realizeGravity(aspects,sb):
+	var x = aspects.get("gravity",null);
+	if x != null:
+		sb.add_to_group("_gravity");
 
 func realizeCollisionOn(aspects,sb):
 	var cOn = aspects.get("collisionon",null);

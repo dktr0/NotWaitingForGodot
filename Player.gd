@@ -194,8 +194,10 @@ func _on_area_3d_area_entered(area):
 			
 func fail():
 	frozen = true;
+	$"../SoundBank".laser();
 	$"../Fail".run();
 	
 func win():
 	frozen = true;
+	$"../SoundBank".win();
 	$"../Win".run();
