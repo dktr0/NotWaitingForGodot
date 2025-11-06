@@ -232,42 +232,45 @@ func makeAKey(aspects):
 func makeAnObelisk(aspects):
 	var scene = preload("res://models/Obelisk.tscn");
 	var o = scene.instantiate();
+	obeliskPositioner(o,aspects);
+		
+func obeliskPositioner(o,aspects):
 	if mode != 2:
 		var y = yCalc(aspects);
 		o.position = Vector3(aspects["x"],y,aspects["z"]);
-		o.position = getObjectOnTopPosition(aspects);
 		realizeStuff(aspects,o);
 		aspects.node3D.add_child(o);
 	else:
 		var x = aspects["x"];
 		var y = aspects["y"];
 		var z = aspects["z"];
-		print("making mode 2 obelisk at " + str(x) + " " + str(y) + " " + str(z));
 		o.position = Vector3(x,y,z);
+		realizeStuff(aspects,o);
 		aspects.node3D = o;
 		add_child(o);
-
-func getObjectOnTopPosition(aspects):
-	var x = aspects["x"];
-	var y = aspects["y"];
-	var z = aspects["z"];
-	var h = aspects["h"];
-	# var nn;
-	#if mode != 2:
-	#	nn = h + 1;
-	#else:
-	#	nn = 1;
-	if mode != 2: # side-scroller no heightmap
-		return Vector3(x,y,z);
+		
+func teleportPositioner(o,aspects):
+	if mode != 2:
+		var y = yCalc(aspects);
+		o.position = Vector3(aspects["x"],y,aspects["z"]);
+		realizeStuff(aspects,o);
+		aspects.node3D.add_child(o);
 	else:
-		return Vector3(x,y,z);
-	
+		var x = aspects["x"];
+		var y = aspects["y"];
+		var z = aspects["z"] + 1;
+		o.position = Vector3(x,y,z);
+		realizeStuff(aspects,o);
+		aspects.node3D = o;
+		add_child(o);
+		
 func makeATeleportTo(aspects):
 	print("makeATeleportTo");
 	var scene = preload("res://teleporter.tscn");
 	var t = scene.instantiate();
-	var y = yCalc(aspects);
-	t.position = Vector3(aspects["x"],y,aspects["z"]);
+	#var y = yCalc(aspects);
+	#t.position = Vector3(aspects["x"],y,aspects["z"]);
+	teleportPositioner(t,aspects);
 	t.targetID = aspects["teleportto"];
 	t.add_to_group("teleportto");
 	realizeStuff(aspects,t);
@@ -277,8 +280,9 @@ func makeATeleportFrom(aspects):
 	print("makeATeleportFrom")
 	var scene = preload("res://teleporter.tscn");
 	var t = scene.instantiate();
-	var y = yCalc(aspects);
-	t.position = Vector3(aspects["x"],y,aspects["z"]);
+	#var y = yCalc(aspects);
+	#t.position = Vector3(aspects["x"],y,aspects["z"]);
+	teleportPositioner(t,aspects);
 	t.add_to_group("teleportfrom_" + aspects["teleportfrom"]);
 	realizeStuff(aspects,t);
 	aspects.node3D.add_child(t);
