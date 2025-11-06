@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bvie1e8mydhw0"]
+
+[ext_resource type="Script" path="res://respawn_area_3d.gd" id="1_4id2t"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lu1wj"]
+
+[node name="RespawnArea3D" type="Area3D" groups=["respawn"]]
+script = ExtResource("1_4id2t")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_lu1wj")

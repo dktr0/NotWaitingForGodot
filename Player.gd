@@ -8,6 +8,9 @@ var terminalVelocity = -10.0;
 var jump = 18;
 var mouse_sensitivity = 0.05;
 var yFailThreshold = -9999999;
+var respawnx;
+var respawny;
+var respawnz;
 
 @onready var camera = $"/root/NotWaitingForGodot/Player/Camera3D";
 @onready var world = $"/root/NotWaitingForGodot/World";
@@ -197,7 +200,12 @@ func _on_area_3d_area_entered(area):
 			fall = 0;
 		else:
 			print("warning no node with correct teleportfrom found to teleport to!");
-			
+	if area.is_in_group("respawn"):
+		print("respawn set to " + str(area.respawnx) + " " + str(area.respawny) + " " + str(area.respawnz));
+		respawnx = area.respawnx;
+		respawny = area.respawny;
+		respawnz = area.respawnz;
+		
 func fail():
 	frozen = true;
 	$"../SoundBank".laser();

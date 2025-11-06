@@ -65,6 +65,9 @@ func _receivedConfiguration(result, response_code, headers, body):
 	playerStartX = float(configuration.get("PlayerStartX",0));
 	playerStartY = float(configuration.get("PlayerStartY",0));
 	playerStartZ = float(configuration.get("PlayerStartZ",0));
+	player.respawnx = playerStartX;
+	player.respawny = playerStartY;
+	player.respawnz = playerStartZ;
 	mode = int(configuration.get("Mode",0));
 	jump = float(configuration.get("Jump",1));
 	cameraX = float(configuration.get("CameraX",0));
@@ -91,7 +94,7 @@ func _receivedConfiguration(result, response_code, headers, body):
 		ui.setError("no WorldSheet ID found in configuration (possibly problem in configuration sheet, possibly bad IDs above)");
 	
 func playerToStartPosition():
-	player.playerStart(playerStartX,playerStartY,playerStartZ);
+	player.playerStart(player.respawnx,player.respawny,player.respawnz);
 
 func getWorld(url):
 	worldRequest.connect("request_completed", Callable(self, "_receivedWorld"));
@@ -264,6 +267,20 @@ func teleportPositioner(o,aspects):
 		aspects.node3D = o;
 		add_child(o);
 		
+func makeARespawn(aspects):
+	var scene = preload("res://respawn_area_3d.tscn");
+	var t = scene.instantiate();
+	teleportPositioner(t,aspects);
+	var respawnx = float(aspects.get("respawnx",0));
+	var respawny = float(aspects.get("respawny",0));
+	var respawnz = float(aspects.get("respawnz",0));
+	print("makeARespawn " + str(respawnx) + " " + str(respawny) + " ");
+	t.respawnx = respawnx;
+	t.respawny = respawny;
+	t.respawnz = respawnz;
+	# ??? realizeStuff(aspects,t);
+	aspects.node3D.add_child(t);
+	
 func makeATeleportTo(aspects):
 	print("makeATeleportTo");
 	var scene = preload("res://teleporter.tscn");
@@ -491,7 +508,10 @@ func parseCode(code,aspects):
 	parseSimpleFunction("collisionon",code,aspects);
 	parseSimpleFunction("collisionoff",code,aspects);
 	parseSimpleFunction("gravity",code,aspects);
-		
+	parseSimpleFunction("respawnx",code,aspects);
+	parseSimpleFunction("respawny",code,aspects);
+	parseSimpleFunction("respawnz",code,aspects);
+	
 func realizeAspects(aspects):
 	# create basic terrain
 	if aspects["substance"] == "water":
@@ -518,6 +538,8 @@ func realizeAspects(aspects):
 		makeATeleportTo(aspects);
 	if aspects.has("teleportfrom"):
 		makeATeleportFrom(aspects);
+	if aspects.has("respawnx") || aspects.has("respawny") || aspects.has("respawnz"):
+		makeARespawn(aspects);
 	return aspects;
 
 func parseFunction(funcName,code):

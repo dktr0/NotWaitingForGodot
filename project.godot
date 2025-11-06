@@ -19,6 +19,10 @@ config/icon="res://icon.png"
 
 window/vsync/vsync_mode=0
 
+[global_group]
+
+respawn=""
+
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
