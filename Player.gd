@@ -1,9 +1,10 @@
 extends CharacterBody3D
 
-var fall = 0;
+var fall = 0.0;
 var speed = 18;
 var acceleration = 6;
 var gravity = 1;
+var terminalVelocity = -10.0;
 var jump = 18;
 var mouse_sensitivity = 0.05;
 var yFailThreshold = -9999999;
@@ -73,6 +74,8 @@ func _physics_process1(delta):
 		fall = jump * world.jump;
 	else:
 		fall = 0;
+	if fall < terminalVelocity:
+		fall = terminalVelocity;
 	var leftStick = Input.get_vector("left_stick_left","left_stick_right","left_stick_up","left_stick_down");
 	var rightStick = Input.get_vector("right_stick_left","right_stick_right","right_stick_up","right_stick_down");
 	if world.mode != 2:
@@ -102,6 +105,8 @@ func _physics_process2(delta):
 			fall = jump;
 	else:
 		fall = 0;
+	if fall < terminalVelocity:
+		fall = terminalVelocity;
 	var leftStick = Input.get_vector("left_stick_left","left_stick_right","left_stick_up","left_stick_down");
 	var rightStick = Input.get_vector("right_stick_left","right_stick_right","right_stick_up","right_stick_down");
 	rotate_y(-rightStick.x*0.04); 

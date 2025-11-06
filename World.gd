@@ -9,6 +9,7 @@ var playerStartX;
 var playerStartY;
 var playerStartZ;
 var playerGravity;
+var playerTerminalVelocity;
 var mode = 2;
 var jump;
 var cameraX;
@@ -71,6 +72,8 @@ func _receivedConfiguration(result, response_code, headers, body):
 	cameraZ = float(configuration.get("CameraZ",12));
 	playerGravity = float(configuration.get("PlayerGravity",1));
 	player.gravity = playerGravity;
+	playerTerminalVelocity = float(configuration.get("PlayerTerminalVelocity",-10.0));
+	player.terminalVelocity = playerTerminalVelocity;
 	player.positionCamera(cameraX,cameraY,cameraZ);
 	
 	autoUpdateInterval = configuration.get("AutoUpdateInterval",null);
@@ -229,10 +232,26 @@ func makeAKey(aspects):
 func makeAnObelisk(aspects):
 	var scene = preload("res://models/Obelisk.tscn");
 	var o = scene.instantiate();
-	var y = yCalc(aspects);
-	o.position = Vector3(aspects["x"],y,aspects["z"]);
+	#var y = yCalc(aspects);
+	#o.position = Vector3(aspects["x"],y,aspects["z"]);
+	o.position = getObjectOnTopPosition(aspects);
 	realizeStuff(aspects,o);
 	aspects.node3D.add_child(o);
+
+func getObjectOnTopPosition(aspects):
+	var x = aspects["x"];
+	var y = aspects["y"];
+	var z = aspects["z"];
+	var h = aspects["h"];
+	# var nn;
+	#if mode != 2:
+	#	nn = h + 1;
+	#else:
+	#	nn = 1;
+	if mode != 2: # side-scroller no heightmap
+		return Vector3(x,y,z);
+	else:
+		return Vector3(x,y,z);
 	
 func makeATeleportTo(aspects):
 	print("makeATeleportTo");
@@ -254,6 +273,8 @@ func makeATeleportFrom(aspects):
 	t.add_to_group("teleportfrom_" + aspects["teleportfrom"]);
 	realizeStuff(aspects,t);
 	aspects.node3D.add_child(t);
+	add_child(t);
+	
 	
 func movableBlock(aspects):
 	print("movableBlock" + str(aspects));
@@ -422,6 +443,7 @@ func parseCode(code,aspects):
 	elif code == "h":
 		aspects["substance"] = "hole";
 	elif code == "obelisk":
+		print("code is obelisk")
 		aspects["obelisk"] = true;
 	elif code == "key":
 		aspects["key"] = true;
@@ -477,6 +499,7 @@ func realizeAspects(aspects):
 	if aspects.has("beam"):
 		makeABeam(aspects);
 	if aspects.has("obelisk"):
+		print("aspects has obelisk")
 		makeAnObelisk(aspects);
 	if aspects.has("teleportto"):
 		makeATeleportTo(aspects);
